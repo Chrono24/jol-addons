@@ -46,12 +46,14 @@ public class TraversalControl {
             .withChildBlacklistDirectClasses(Set.of(FileDescriptor.class))
             .withChildBlacklist(List.of(FileChannel.class))
             .build(false);
+
     private final Set<Class<?>> parentBlacklistDirectClasses;
     private final List<Class<?>> parentBlacklist;
     private final List<Class<? extends Annotation>> annotations;
     private final Set<Class<?>> childBlacklistDirectClasses;
     private final List<Class<?>> childBlacklist;
     private final Map<String, Set<String>> firstDescents;
+
     public TraversalControl(Set<Class<?>> parentBlacklistDirectClasses, List<Class<?>> parentBlacklist, List<Class<? extends Annotation>> annotations,
                             Set<Class<?>> childBlacklistDirectClasses, List<Class<?>> childBlacklist, boolean takeNote) {
 
@@ -136,7 +138,7 @@ public class TraversalControl {
         }
     }
 
-    public static class Builder {
+    public static class Builder implements Cloneable {
 
         private Set<Class<?>> parentBlacklistDirectClasses = Collections.emptySet();
         private List<Class<?>> parentBlacklist = Collections.emptyList();
@@ -145,6 +147,11 @@ public class TraversalControl {
 
         private Set<Class<?>> childBlacklistDirectClasses = Collections.emptySet();
         private List<Class<?>> childBlacklist = Collections.emptyList();
+
+        @Override
+        public Object clone() throws CloneNotSupportedException {
+            return super.clone();
+        }
 
         public TraversalControl build(boolean takeNote) {
             return new TraversalControl(parentBlacklistDirectClasses, parentBlacklist, annotations, childBlacklistDirectClasses, childBlacklist, takeNote);
