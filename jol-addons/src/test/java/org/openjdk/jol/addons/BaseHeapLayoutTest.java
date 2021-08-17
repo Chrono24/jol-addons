@@ -25,6 +25,7 @@
 package org.openjdk.jol.addons;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.openjdk.jol.info.VisitedIdentities;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -44,7 +45,7 @@ abstract class BaseHeapLayoutTest {
 
     protected void givenRoot(Object root) {
         heapLayout = HeapLayout.parseInstance(TraversalControl.instance(), HistogramDeduplicator.instance(), //
-                32, 32, 32, root);
+                new VisitedIdentities.WithSimpleIdentityHashSet(32), 32, 32, root);
     }
 
     protected void thenClassHistogramIs(String expected) {

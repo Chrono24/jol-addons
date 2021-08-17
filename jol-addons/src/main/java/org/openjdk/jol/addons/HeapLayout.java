@@ -49,10 +49,6 @@ public class HeapLayout extends HeapStats {
     private final ClassHistogramReporter byClass;
     private final HeapTreeReporter byHeap;
 
-    public HeapStats toStats() {
-        return new HeapStats(this);
-    }
-
     public HeapLayout(ClassHistogramReporter byClass, HeapTreeReporter byHeap, HeapStats stats) {
         this.byClass = byClass;
         this.byHeap = byHeap;
@@ -90,26 +86,25 @@ public class HeapLayout extends HeapStats {
         return builder.build();
     }
 
-
     /**
      * Parse the object graph starting from the given instance.
      *
-     * @param tc TraversalControl employed to restrict heap parsing to an imaginary directed acyclic graph of interest
-     * @param hd HistogramDeduplicator to make sure the output is a lot less redundant but instead far more expressive
-     * @param identitySetCapacity pass the value from the previous run or a guesstimate to reduce incremental growth costs
-     * @param stackCapacity  pass the value from the previous run or a guesstimate to reduce incremental growth costs
-     * @param objectSizeCacheCapacity  pass the value from the previous run or a guesstimate to reduce incremental growth costs
-     * @param roots root instances to start from
+     * @param tc                      TraversalControl employed to restrict heap parsing to an imaginary directed acyclic graph of interest
+     * @param hd                      HistogramDeduplicator to make sure the output is a lot less redundant but instead far more expressive
+     * @param identitySet             prepared identity set
+     * @param stackCapacity           pass the value from the previous run or a guesstimate to reduce incremental growth costs
+     * @param objectSizeCacheCapacity pass the value from the previous run or a guesstimate to reduce incremental growth costs
+     * @param roots                   root instances to start from
      * @return object graph
      */
     public static HeapLayout parseInstance(TraversalControl tc, HistogramDeduplicator hd,
-                                           int identitySetCapacity, int stackCapacity,
+                                           VisitedIdentities identitySet, int stackCapacity,
                                            int objectSizeCacheCapacity, Object... roots) {
 
         final InitialNodeFactory nodeFactory = new InitialNodeFactory(hd, stackCapacity);
         final HeapLayout.Builder builder = new HeapWalker() //
                 .withConditionalRecursion(tc::isChildToBeTraversed) //
-                .withIdentitySet(new VisitedIdentities.WithSimpleIdentityHashSet(identitySetCapacity)) //
+                .withIdentitySet(identitySet) //
                 .withStackCapacity(stackCapacity) //
                 .withArraySizeCache(new ArraySizeCache.Precalculated()) //
                 .withObjectSizeCache(new ObjectSizeCache.WithTObjectLongMap(objectSizeCacheCapacity)) //
@@ -120,6 +115,10 @@ public class HeapLayout extends HeapStats {
 
     private static GatheringNode newGatheringNode(ClassPath p) {
         return new GatheringNode();
+    }
+
+    public HeapStats toStats() {
+        return new HeapStats(this);
     }
 
     public void toClassHistogramDrillDown(PrintWriter pw) {
