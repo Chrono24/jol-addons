@@ -67,10 +67,17 @@ public class HistogramDeduplicator {
                     "before", "next/before/after", //
                     "after", "next/before/after" //
             ), //
-            "ConcurrentSkipListMap$Index", //
+            "java.util.concurrent.ConcurrentSkipListMap$Index", //
             Map.of( //
                     "down", "down/right", //
                     "right", "down/right" //
+            ), //
+            "com.google.common.cache.LocalCache$StrongAccessWriteEntry", //
+            Map.of( //
+                    "nextAccess", "nextAccess/previousAccess/nextWrite/previousWrite", //
+                    "previousAccess", "nextAccess/previousAccess/nextWrite/previousWrite", //
+                    "nextWrite", "nextAccess/previousAccess/nextWrite/previousWrite", //
+                    "previousWrite", "nextAccess/previousAccess/nextWrite/previousWrite" //
             ) //
     );
 
