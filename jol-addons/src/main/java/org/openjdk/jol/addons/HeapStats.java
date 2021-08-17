@@ -37,6 +37,14 @@ public class HeapStats implements HeapWalker.Stats {
     private int identitySetCapacity;
     private int sizeCacheCapacity;
 
+    public HeapStats(HeapStats original) {
+        totalCount = original.totalCount;
+        totalSize = original.totalSize;
+        stackCapacity = original.stackCapacity;
+        identitySetCapacity = original.identitySetCapacity;
+        sizeCacheCapacity = original.sizeCacheCapacity;
+    }
+
     public HeapStats(Object... roots) {
     }
 
@@ -54,11 +62,11 @@ public class HeapStats implements HeapWalker.Stats {
     /**
      * Parse the object stats starting from the given instance.
      *
-     * @param tc TraversalControl employed to restrict heap parsing to an imaginary directed acyclic graph of interest
-     * @param identitySetCapacity pass the value from the previous run or a guesstimate to reduce incremental growth costs
-     * @param stackCapacity  pass the value from the previous run or a guesstimate to reduce incremental growth costs
-     * @param objectSizeCacheCapacity  pass the value from the previous run or a guesstimate to reduce incremental growth costs
-     * @param roots root instances to start from
+     * @param tc                      TraversalControl employed to restrict heap parsing to an imaginary directed acyclic graph of interest
+     * @param identitySetCapacity     pass the value from the previous run or a guesstimate to reduce incremental growth costs
+     * @param stackCapacity           pass the value from the previous run or a guesstimate to reduce incremental growth costs
+     * @param objectSizeCacheCapacity pass the value from the previous run or a guesstimate to reduce incremental growth costs
+     * @param roots                   root instances to start from
      * @return object stats
      */
     public static HeapStats parseInstance(TraversalControl tc, int identitySetCapacity, int stackCapacity, int objectSizeCacheCapacity, Object... roots) {

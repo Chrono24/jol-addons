@@ -49,6 +49,10 @@ public class HeapLayout extends HeapStats {
     private final ClassHistogramReporter byClass;
     private final HeapTreeReporter byHeap;
 
+    public HeapStats toStats() {
+        return new HeapStats(this);
+    }
+
     public HeapLayout(ClassHistogramReporter byClass, HeapTreeReporter byHeap, HeapStats stats) {
         this.byClass = byClass;
         this.byHeap = byHeap;
