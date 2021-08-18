@@ -58,7 +58,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              1       24 B           24       24 B              24              22   100.00 %        560 B             560   100.00 %      +--java.util.ArrayList\n"
                         + "              1       56 B           56       56 B              56              21    95.45 %        536 B             536    95.71 %      |  +--[Ljava.lang.Object; ArrayList.elementData [10 of 10 used (100.00 %)]\n"
                         + "             10       24 B           24      240 B             240              20    95.24 %        480 B             480    89.55 %      |  |  +--java.lang.String [i]\n"
-                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value\n");
+                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -96,9 +96,9 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              5       32 B           32      160 B             160              25    96.15 %        640 B             640    88.89 %      |  |  +--java.util.concurrent.ConcurrentHashMap$Node [i]\n"
                         + "             10       24 B           24      240 B             240              20    80.00 %        480 B             480    75.00 %      |  |  |  +--java.lang.String\n"
                         + "              5       24 B           24      120 B             120              10    50.00 %        240 B             240    50.00 %      |  |  |  |  +--Node.val\n"
-                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value\n"
+                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value [5 of 5 used (100.00 %)]\n"
                         + "              5       24 B           24      120 B             120              10    50.00 %        240 B             240    50.00 %      |  |  |  |  +--Node.key\n"
-                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value\n");
+                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value [5 of 5 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -153,7 +153,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              1       80 B           80       80 B              80              31    96.88 %        880 B             880    93.22 %      |  |  +--[Ljava.util.concurrent.ConcurrentHashMap$Node; ConcurrentHashMap.table [5 of 16 used (31.25 %)]\n"
                         + "             10       32 B           32      320 B             320              30    96.77 %        800 B             800    90.91 %      |  |  |  +--java.util.concurrent.ConcurrentHashMap$Node [i]\n"
                         + "             10       24 B           24      240 B             240              20    66.67 %        480 B             480    60.00 %      |  |  |  |  +--java.lang.String Node.key\n"
-                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  |  |  +--[B String.value\n"
+                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n"
                         + "              1       16 B           16       16 B              16               1     2.94 %         16 B              16     1.63 %      |  +--java.lang.Boolean KeySetView.value\n");
 
         thenClassHistogramIs( //
@@ -205,9 +205,9 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              5       32 B           32      160 B             160              25    96.15 %        640 B             640    93.02 %      |  |  +--java.util.HashMap$Node [i]\n"
                         + "             10       24 B           24      240 B             240              20    80.00 %        480 B             480    75.00 %      |  |  |  +--java.lang.String\n"
                         + "              5       24 B           24      120 B             120              10    50.00 %        240 B             240    50.00 %      |  |  |  |  +--Node.value\n"
-                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value\n"
+                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value [5 of 5 used (100.00 %)]\n"
                         + "              5       24 B           24      120 B             120              10    50.00 %        240 B             240    50.00 %      |  |  |  |  +--Node.key\n"
-                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value\n");
+                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  |  +--[B String.value [5 of 5 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -255,7 +255,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              1       16 B           16       16 B              16              22   100.00 %        552 B             552   100.00 %      +--java.util.ImmutableCollections$ListN\n"
                         + "              1       56 B           56       56 B              56              21    95.45 %        536 B             536    97.10 %      |  +--[Ljava.lang.Object; ListN.elements [10 of 10 used (100.00 %)]\n"
                         + "             10       24 B           24      240 B             240              20    95.24 %        480 B             480    89.55 %      |  |  +--java.lang.String [i]\n"
-                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value\n");
+                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -290,7 +290,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              1       32 B           32       32 B              32              22   100.00 %        608 B             608   100.00 %      +--java.util.ImmutableCollections$MapN\n"
                         + "              1       96 B           96       96 B              96              21    95.45 %        576 B             576    94.74 %      |  +--[Ljava.lang.Object; MapN.table [10 of 20 used (50.00 %)]\n"
                         + "             10       24 B           24      240 B             240              20    95.24 %        480 B             480    83.33 %      |  |  +--java.lang.String [i]\n"
-                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value\n");
+                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -325,7 +325,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              1       24 B           24       24 B              24              22   100.00 %        600 B             600   100.00 %      +--java.util.ImmutableCollections$SetN\n"
                         + "              1       96 B           96       96 B              96              21    95.45 %        576 B             576    96.00 %      |  +--[Ljava.lang.Object; SetN.elements [10 of 20 used (50.00 %)]\n"
                         + "             10       24 B           24      240 B             240              20    95.24 %        480 B             480    83.33 %      |  |  +--java.lang.String [i]\n"
-                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value\n");
+                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -363,15 +363,15 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              3       40 B           40      120 B             120              15    93.75 %        408 B             408    89.47 %      |  |  +--java.util.LinkedHashMap$Entry [i]\n"
                         + "              6       24 B           24      144 B             144              12    80.00 %        288 B             288    70.59 %      |  |  |  +--java.lang.String\n"
                         + "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.value\n"
-                        + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value\n"
+                        + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n"
                         + "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.key\n"
-                        + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value\n"
+                        + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n"
                         + "              2       40 B           40       80 B              80              10    37.04 %        272 B             272    34.69 %      |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
                         + "              4       24 B           24       96 B              96               8    80.00 %        192 B             192    70.59 %      |  |  +--java.lang.String\n"
                         + "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.value\n"
-                        + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value\n"
+                        + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n"
                         + "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.key\n"
-                        + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value\n");
+                        + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -424,7 +424,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              1       32 B           32       32 B              32              31   100.00 %        752 B             752   100.00 %      +--java.util.LinkedList\n"
                         + "             10       24 B           24      240 B             240              30    96.77 %        720 B             720    95.74 %      |  +--java.util.LinkedList$Node LinkedList.first/last\n"
                         + "             10       24 B           24      240 B             240              20    66.67 %        480 B             480    66.67 %      |  |  +--java.lang.String Node.item\n"
-                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value\n");
+                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
@@ -460,9 +460,9 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              5       40 B           40      200 B             200              25    96.15 %        680 B             680    93.41 %      |  +--java.util.TreeMap$Entry TreeMap.root\n"
                         + "             10       24 B           24      240 B             240              20    80.00 %        480 B             480    70.59 %      |  |  +--java.lang.String\n"
                         + "              5       24 B           24      120 B             120              10    50.00 %        240 B             240    50.00 %      |  |  |  +--Entry.value\n"
-                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  +--[B String.value\n"
+                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  +--[B String.value [5 of 5 used (100.00 %)]\n"
                         + "              5       24 B           24      120 B             120              10    50.00 %        240 B             240    50.00 %      |  |  |  +--Entry.key\n"
-                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  +--[B String.value\n");
+                        + "              5       24 B           24      120 B             120               5    50.00 %        120 B             120    50.00 %      |  |  |  |  +--[B String.value [5 of 5 used (100.00 %)]\n");
 
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"

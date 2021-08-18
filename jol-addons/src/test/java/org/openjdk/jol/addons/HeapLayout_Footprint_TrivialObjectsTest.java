@@ -33,71 +33,80 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
     void testBoolean() {
         givenRoot(false);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       16 B              16   100.00 %   (total)\n"
-                        + "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Boolean\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Boolean\n");
     }
 
     @Test
     void testByte() {
         givenRoot((byte) 0);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       16 B              16   100.00 %   (total)\n"
-                        + "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Byte\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Byte\n");
     }
 
     @Test
-    void testDouble() {
-        givenRoot(0.0);
+    void testChar() {
+        givenRoot((char) 0);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       24 B              24   100.00 %   (total)\n"
-                        + "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Double\n");
-    }
-
-    @Test
-    void testFloat() {
-        givenRoot(0.0f);
-        thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       16 B              16   100.00 %   (total)\n"
-                        + "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Float\n");
-    }
-
-    @Test
-    void testInteger() {
-        givenRoot(0);
-        thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       16 B              16   100.00 %   (total)\n"
-                        + "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Integer\n");
-    }
-
-    @Test
-    void testLong() {
-        givenRoot(0L);
-        thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       24 B              24   100.00 %   (total)\n"
-                        + "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Long\n");
-    }
-
-    @Test
-    void testObject() {
-        givenRoot(new Object());
-        thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       16 B              16   100.00 %   (total)\n"
-                        + "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Object\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Character\n");
     }
 
     @Test
     void testShort() {
         givenRoot((short) 0);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       16 B              16   100.00 %   (total)\n"
-                        + "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Short\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Short\n");
+    }
+
+    @Test
+    void testInteger() {
+        givenRoot(0);
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Integer\n");
+    }
+
+    @Test
+    void testFloat() {
+        givenRoot(0.0f);
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Float\n");
+    }
+
+    @Test
+    void testLong() {
+        givenRoot(0L);
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
+                        "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Long\n");
+    }
+
+    @Test
+    void testDouble() {
+        givenRoot(0.0);
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
+                        "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Double\n");
+    }
+
+    @Test
+    void testObject() {
+        givenRoot(new Object());
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Object\n");
     }
 }

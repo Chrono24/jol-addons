@@ -33,71 +33,71 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
     void testBoolean() {
         givenRoot(false);
         thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Boolean\n");
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Boolean\n");
     }
 
     @Test
     void testByte() {
         givenRoot((byte) 0);
         thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Byte\n");
-    }
-
-    @Test
-    void testDouble() {
-        givenRoot(0.0);
-        thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n"
-                        + "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Double\n");
-    }
-
-    @Test
-    void testFloat() {
-        givenRoot(0.0f);
-        thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Float\n");
-    }
-
-    @Test
-    void testInteger() {
-        givenRoot(0);
-        thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Integer\n");
-    }
-
-    @Test
-    void testLong() {
-        givenRoot(0L);
-        thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n"
-                        + "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Long\n");
-    }
-
-    @Test
-    void testObject() {
-        givenRoot(new Object());
-        thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Object\n");
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Byte\n");
     }
 
     @Test
     void testShort() {
         givenRoot((short) 0);
         thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n"
-                        + "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Short\n");
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Short\n");
+    }
+
+    @Test
+    void testInteger() {
+        givenRoot(0);
+        thenClassHistogramIs( //
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Integer\n");
+    }
+
+    @Test
+    void testLong() {
+        givenRoot(0L);
+        thenClassHistogramIs( //
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n" +
+                        "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Long\n");
+    }
+
+    @Test
+    void testFloat() {
+        givenRoot(0.0f);
+        thenClassHistogramIs( //
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Float\n");
+    }
+
+    @Test
+    void testDouble() {
+        givenRoot(0.0);
+        thenClassHistogramIs( //
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n" +
+                        "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Double\n");
+    }
+
+    @Test
+    void testObject() {
+        givenRoot(new Object());
+        thenClassHistogramIs( //
+                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Object\n");
     }
 }

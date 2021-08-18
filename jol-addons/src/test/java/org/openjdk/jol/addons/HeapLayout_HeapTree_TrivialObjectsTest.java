@@ -48,21 +48,21 @@ public class HeapLayout_HeapTree_TrivialObjectsTest extends BaseHeapLayoutTest {
     }
 
     @Test
-    void testDouble() {
-        givenRoot(0.0);
-        thenHeapTreeIs( //
-                "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
-                        + "              1       24 B           24       24 B              24               1   100.00 %         24 B              24   100.00 %   (total)\n"
-                        + "              1       24 B           24       24 B              24               1   100.00 %         24 B              24   100.00 %      +--java.lang.Double\n");
-    }
-
-    @Test
-    void testFloat() {
-        givenRoot(0.0f);
+    void testChar() {
+        givenRoot((char) 0);
         thenHeapTreeIs( //
                 "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
                         + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %   (total)\n"
-                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--java.lang.Float\n");
+                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--java.lang.Character\n");
+    }
+
+    @Test
+    void testShort() {
+        givenRoot((short) 0);
+        thenHeapTreeIs( //
+                "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
+                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %   (total)\n"
+                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--java.lang.Short\n");
     }
 
     @Test
@@ -75,6 +75,15 @@ public class HeapLayout_HeapTree_TrivialObjectsTest extends BaseHeapLayoutTest {
     }
 
     @Test
+    void testFloat() {
+        givenRoot(0.0f);
+        thenHeapTreeIs( //
+                "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
+                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %   (total)\n"
+                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--java.lang.Float\n");
+    }
+
+    @Test
     void testLong() {
         givenRoot(0L);
         thenHeapTreeIs( //
@@ -84,20 +93,20 @@ public class HeapLayout_HeapTree_TrivialObjectsTest extends BaseHeapLayoutTest {
     }
 
     @Test
+    void testDouble() {
+        givenRoot(0.0);
+        thenHeapTreeIs( //
+                "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
+                        + "              1       24 B           24       24 B              24               1   100.00 %         24 B              24   100.00 %   (total)\n"
+                        + "              1       24 B           24       24 B              24               1   100.00 %         24 B              24   100.00 %      +--java.lang.Double\n");
+    }
+
+    @Test
     void testObject() {
         givenRoot(new Object());
         thenHeapTreeIs( //
                 "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
                         + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %   (total)\n"
                         + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--java.lang.Object\n");
-    }
-
-    @Test
-    void testShort() {
-        givenRoot((short) 0);
-        thenHeapTreeIs( //
-                "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
-                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %   (total)\n"
-                        + "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--java.lang.Short\n");
     }
 }

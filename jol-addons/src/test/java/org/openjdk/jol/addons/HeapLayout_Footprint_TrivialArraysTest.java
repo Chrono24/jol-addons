@@ -33,71 +33,80 @@ public class HeapLayout_Footprint_TrivialArraysTest extends BaseHeapLayoutTest {
     void testBooleanArray() {
         givenRoot(new boolean[0]);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       16 B              16   100.00 %   (total)\n"
-                        + "               1   100.00 %           16       16 B              16   100.00 %   [Z\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                        "               1   100.00 %           16       16 B              16   100.00 %   [Z\n");
     }
 
     @Test
     void testByteArray() {
         givenRoot(new byte[1]);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       24 B              24   100.00 %   (total)\n"
-                        + "               1   100.00 %           24       24 B              24   100.00 %   [B\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
+                        "               1   100.00 %           24       24 B              24   100.00 %   [B\n");
     }
 
     @Test
-    void testDoubleArray() {
-        givenRoot(new double[6]);
+    void testCharArray() {
+        givenRoot(new char[2]);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       64 B              64   100.00 %   (total)\n"
-                        + "               1   100.00 %           64       64 B              64   100.00 %   [D\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
+                        "               1   100.00 %           24       24 B              24   100.00 %   [C\n");
+    }
+
+    @Test
+    void testShortArray() {
+        givenRoot(new short[3]);
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
+                        "               1   100.00 %           24       24 B              24   100.00 %   [S\n");
+    }
+
+    @Test
+    void testIntegerArray() {
+        givenRoot(new int[4]);
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       32 B              32   100.00 %   (total)\n" +
+                        "               1   100.00 %           32       32 B              32   100.00 %   [I\n");
     }
 
     @Test
     void testFloatArray() {
         givenRoot(new float[5]);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       40 B              40   100.00 %   (total)\n"
-                        + "               1   100.00 %           40       40 B              40   100.00 %   [F\n");
-    }
-
-    @Test
-    void testIntegerArray() {
-        givenRoot(new int[3]);
-        thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       32 B              32   100.00 %   (total)\n"
-                        + "               1   100.00 %           32       32 B              32   100.00 %   [I\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       40 B              40   100.00 %   (total)\n" +
+                        "               1   100.00 %           40       40 B              40   100.00 %   [F\n");
     }
 
     @Test
     void testLongArray() {
-        givenRoot(new long[4]);
+        givenRoot(new long[6]);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       48 B              48   100.00 %   (total)\n"
-                        + "               1   100.00 %           48       48 B              48   100.00 %   [J\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       64 B              64   100.00 %   (total)\n" +
+                        "               1   100.00 %           64       64 B              64   100.00 %   [J\n");
+    }
+
+    @Test
+    void testDoubleArray() {
+        givenRoot(new double[7]);
+        thenFootprintIs( //
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       72 B              72   100.00 %   (total)\n" +
+                        "               1   100.00 %           72       72 B              72   100.00 %   [D\n");
     }
 
     @Test
     void testObjectArray() {
-        givenRoot(new Object[7]);
+        givenRoot(new Object[8]);
         thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       48 B              48   100.00 %   (total)\n"
-                        + "               1   100.00 %           48       48 B              48   100.00 %   [Ljava.lang.Object;\n");
-    }
-
-    @Test
-    void testShortArray() {
-        givenRoot(new short[2]);
-        thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                        + "               1   100.00 %           --       24 B              24   100.00 %   (total)\n"
-                        + "               1   100.00 %           24       24 B              24   100.00 %   [S\n");
+                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                        "               1   100.00 %           --       48 B              48   100.00 %   (total)\n" +
+                        "               1   100.00 %           48       48 B              48   100.00 %   [Ljava.lang.Object;\n");
     }
 }
