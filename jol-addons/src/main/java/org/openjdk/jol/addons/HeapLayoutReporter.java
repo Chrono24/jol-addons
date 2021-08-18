@@ -24,35 +24,42 @@
  */
 package org.openjdk.jol.addons;
 
-import gnu.trove.impl.sync.TSynchronizedIntObjectMap;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.PrintWriter;
-import java.util.function.LongFunction;
+import java.util.function.IntFunction;
 
 
 abstract class HeapLayoutReporter {
 
     private static final int INDENT_CHARS = 3;
 
-    /* TODO reconsider this.
-     * There should never go too much in here, and it's so damned repetitive... Should something ever
-     * implode though, and fill this up wholesale, the fact it will never go away won't exactly help.
-     */
-    private static final TIntObjectMap<String> CACHED_INDENTS = new TSynchronizedIntObjectMap<>(new TIntObjectHashMap<>());
-
     private static final String MARGIN = " ".repeat(INDENT_CHARS);
     private static final String INDENT_VERTICAL = "|" + " ".repeat(INDENT_CHARS - 1);
     private static final String INDENT_HORIZONTAL = "+" + "-".repeat(INDENT_CHARS - 1);
+
+    private static final String[] PREPPED_INDENTS = new String[16];
+
+    static {
+        for (int i = 0, n = PREPPED_INDENTS.length; i < n; ++i) {
+            PREPPED_INDENTS[i] = createIndentFor(i + 1);
+        }
+    }
+
+
     protected final PermNode root;
+
     protected final int stackDepth;
+
+    private final TIntObjectMap<String> cachedIndents = new TIntObjectHashMap<>();
+
     public HeapLayoutReporter(PermNode root, int stackDepth) {
         this.root = root;
         this.stackDepth = stackDepth;
     }
 
-    private static <V> V computeIfAbsent(TIntObjectMap<V> map, int key, LongFunction<V> keyMapper) {
+    private static <V> V computeIfAbsent(TIntObjectMap<V> map, int key, IntFunction<V> keyMapper) {
         V value = map.get(key);
         if (value == null) {
             value = keyMapper.apply(key);
@@ -61,20 +68,20 @@ abstract class HeapLayoutReporter {
         return value;
     }
 
+    private static String createIndentFor(int depth) {
+        if (depth < 1) throw new IllegalArgumentException();
+        return MARGIN + INDENT_VERTICAL.repeat(depth - 1) + INDENT_HORIZONTAL;
+    }
+
     public void toDrillDown(PrintWriter pw) {
         printHeadline(pw);
         NodeWithChildren.walk(root, 0, NodeWithChildren.UNLIMITED, 0, (n, d) -> printRow(n, d, pw), stackDepth);
     }
 
     protected String getIndentFor(int depth) {
-        String indent = computeIfAbsent(CACHED_INDENTS, depth, d -> {
-            String margin = depth > 0 ? MARGIN : "";
-            String indentVertical = depth > 1 ? INDENT_VERTICAL.repeat(depth - 1) : "";
-            String indentHorizontal = depth > 0 ? INDENT_HORIZONTAL : "";
-            String combinedIndent = margin + indentVertical + indentHorizontal;
-            return combinedIndent;
-        });
-        return indent;
+        if (depth < 1) return "";
+        if (depth <= PREPPED_INDENTS.length) return PREPPED_INDENTS[depth - 1];
+        return computeIfAbsent(cachedIndents, depth, HeapLayoutReporter::createIndentFor);
     }
 
     protected abstract void printHeadline(PrintWriter pw);
