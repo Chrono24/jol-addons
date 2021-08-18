@@ -42,7 +42,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
 
     @Test
     void arrayList() {
-        givenRoot(new ArrayList(_templateList));
+        givenRoot(new ArrayList<>(_templateList));
 
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
@@ -408,7 +408,7 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
 
     @Test
     void linkedList() {
-        givenRoot(new LinkedList(_templateList));
+        givenRoot(new LinkedList<>(_templateList));
 
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
