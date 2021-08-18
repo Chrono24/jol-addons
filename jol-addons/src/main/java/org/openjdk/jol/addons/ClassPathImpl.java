@@ -79,12 +79,12 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
 
             boolean terminal = hd.isTerminal(clazz);
             if (terminal) {
-                LOG.info("terminal symbol {}", clazz);
+                LOG.debug("terminal symbol {}", clazz);
             }
 
             // trivial case: List / Map / whatever nodes pointing to instances of same class within ADT
             if (isMerged(label, clazz)) {
-                LOG.info("merging tail {}", tail);
+                LOG.debug("merging tail {}", tail);
                 return this;
             }
 
@@ -103,7 +103,7 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
                             ClassPathImpl parent = this;
                             do {
                                 if (parent.size() == split) {
-                                    LOG.info("deduplicating {}", test2);
+                                    LOG.debug("deduplicating {}", test2);
                                     return parent;
                                 }
                                 parent = parent.getParent();
