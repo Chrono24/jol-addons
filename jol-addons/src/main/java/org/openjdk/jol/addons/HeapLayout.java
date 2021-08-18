@@ -46,12 +46,23 @@ import static java.util.Comparator.comparingLong;
 
 public class HeapLayout extends HeapStats {
 
-    private final ClassHistogramReporter byClass;
-    private final HeapTreeReporter byHeap;
+    private final PermNode classHistogramRoot;
+    private final int classHistogramDepth;
 
-    public HeapLayout(ClassHistogramReporter byClass, HeapTreeReporter byHeap, HeapStats stats) {
-        this.byClass = byClass;
-        this.byHeap = byHeap;
+    private final PermNode heapTreeRoot;
+    private final int heapTreeDepth;
+
+    private final String description;
+
+    public HeapLayout(PermNode classHistogramRoot, int classHistogramDepth, String description, int heapTreeDepth, PermNode heapTreeRoot, HeapStats stats) {
+
+        this.classHistogramRoot = classHistogramRoot;
+        this.classHistogramDepth = classHistogramDepth;
+
+        this.heapTreeRoot = heapTreeRoot;
+        this.heapTreeDepth = heapTreeDepth;
+
+        this.description = description;
 
         setContainerCapacities(stats.stackCapacity(), stats.identitySetCapacity(), stats.sizeCacheCapacity());
     }
@@ -122,25 +133,33 @@ public class HeapLayout extends HeapStats {
     }
 
     public void toClassHistogramDrillDown(PrintWriter pw) {
-        byClass.toDrillDown(pw);
+        classHistogram().toDrillDown(pw);
     }
 
     public void toFootprint(PrintWriter pw) {
-        byClass.toFootprint(pw);
+        classHistogram().toFootprint(pw);
     }
 
     public void toHeapTreeDrillDown(PrintWriter pw) {
-        byHeap.toDrillDown(pw);
+        heapTree().toDrillDown(pw);
     }
 
     @Override
     public long totalCount() {
-        return byHeap.root.getTotalCount();
+        return heapTreeRoot.getTotalCount();
     }
 
     @Override
     public long totalSize() {
-        return byHeap.root.getTotalSize();
+        return heapTreeRoot.getTotalSize();
+    }
+
+    private ClassHistogramReporter classHistogram() {
+        return new ClassHistogramReporter(classHistogramRoot, classHistogramDepth, description);
+    }
+
+    private HeapTreeReporter heapTree() {
+        return new HeapTreeReporter(heapTreeRoot, heapTreeDepth);
     }
 
     private static final class Builder implements HeapWalker.Graph<InitialNode> {
@@ -190,16 +209,14 @@ public class HeapLayout extends HeapStats {
         }
 
         public HeapLayout build() {
-            AtomicInteger maxClassStackDepth = new AtomicInteger();
-            PermNode classRoot = convertTrie(classHistogramDrillDown, true, false, this::getParentClassNameForClassHistogram, this::takeParentClassName,
-                    maxClassStackDepth);
-            ClassHistogramReporter byClass = new ClassHistogramReporter(classRoot, maxClassStackDepth.get(), description);
+            AtomicInteger classHistogramDepth = new AtomicInteger();
+            PermNode classHistogramRoot = convertTrie(classHistogramDrillDown, true, false, this::getParentClassNameForClassHistogram, this::takeParentClassName,
+                    classHistogramDepth);
 
-            AtomicInteger maxTreeStackDepth = new AtomicInteger();
-            PermNode heapRoot = convertTrie(heapTreeDrillDown, true, true, this::getParentClassNameForHeapTree, this::takeLabel, maxTreeStackDepth);
-            HeapTreeReporter byHeapTree = new HeapTreeReporter(heapRoot, maxTreeStackDepth.get());
+            AtomicInteger heapTreeDepth = new AtomicInteger();
+            PermNode heapTreeRoot = convertTrie(heapTreeDrillDown, true, true, this::getParentClassNameForHeapTree, this::takeLabel, heapTreeDepth);
 
-            return new HeapLayout(byClass, byHeapTree, stats);
+            return new HeapLayout(classHistogramRoot, classHistogramDepth.get(), description, heapTreeDepth.get(), heapTreeRoot, stats);
         }
 
         @Override
