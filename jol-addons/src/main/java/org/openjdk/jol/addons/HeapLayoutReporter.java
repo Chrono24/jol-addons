@@ -39,11 +39,11 @@ abstract class HeapLayoutReporter {
     private static final String INDENT_VERTICAL = "|" + " ".repeat(INDENT_CHARS - 1);
     private static final String INDENT_HORIZONTAL = "+" + "-".repeat(INDENT_CHARS - 1);
 
-    private static final String[] PREPPED_INDENTS = new String[16];
+    private static final String[] PREPARED_INDENTS = new String[28];
 
     static {
-        for (int i = 0, n = PREPPED_INDENTS.length; i < n; ++i) {
-            PREPPED_INDENTS[i] = createIndentFor(i + 1);
+        for (int i = 0, n = PREPARED_INDENTS.length; i < n; ++i) {
+            PREPARED_INDENTS[i] = createIndentFor(i + 1);
         }
     }
 
@@ -80,7 +80,7 @@ abstract class HeapLayoutReporter {
 
     protected String getIndentFor(int depth) {
         if (depth < 1) return "";
-        if (depth <= PREPPED_INDENTS.length) return PREPPED_INDENTS[depth - 1];
+        if (depth <= PREPARED_INDENTS.length) return PREPARED_INDENTS[depth - 1];
         return computeIfAbsent(cachedIndents, depth, HeapLayoutReporter::createIndentFor);
     }
 
