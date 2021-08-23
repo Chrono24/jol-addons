@@ -42,7 +42,7 @@ public class TraversalControl {
 
     private static final TraversalControl INSTANCE = builder().withParentBlacklistDirectClasses(Set.of(Class.class, Field.class))
             .withParentBlacklist(List.of(Thread.class, EnumSet.class, ClassLoader.class))
-            .withAnnotations(List.of(Exclude.class))
+            .withAnnotations(List.of(ExcludeFromHeapTraversal.class))
             .withChildBlacklistDirectClasses(Set.of(FileDescriptor.class))
             .withChildBlacklist(List.of(FileChannel.class))
             .build(false);
