@@ -72,6 +72,11 @@ public class HistogramDeduplicator {
                     "down", "down/right", //
                     "right", "down/right" //
             ), //
+            "java.util.concurrent.ConcurrentHashMap$TreeBin", //
+            Map.of( //
+                    "first", "first/root", //
+                    "root", "first/root" //
+            ), //
             "com.google.common.cache.LocalCache$StrongAccessWriteEntry", //
             Map.of( //
                     "nextAccess", "nextAccess/previousAccess/nextWrite/previousWrite", //
