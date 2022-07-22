@@ -241,24 +241,25 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
     void immutableCollectionsList() {
         givenRoot(_templateList);
 
-        thenFootprintIs( //
-                "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
+        if (Integer.parseInt(System.getProperty("java.vm.specification.version")) < 16) {
+            thenFootprintIs( //
+                  "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
                         + "              22   100.00 %           --      552 B             552   100.00 %   (total)\n"
                         + "              10    45.45 %           24      240 B             240    43.48 %   java.lang.String\n"
                         + "              10    45.45 %           24      240 B             240    43.48 %   [B\n"
                         + "               1     4.55 %           56       56 B              56    10.14 %   [Ljava.lang.Object;\n"
                         + "               1     4.55 %           16       16 B              16     2.90 %   java.util.ImmutableCollections$ListN\n");
 
-        thenHeapTreeIs( //
-                "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
+            thenHeapTreeIs( //
+                  "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
                         + "              1       16 B           16       16 B              16              22   100.00 %        552 B             552   100.00 %   (total)\n"
                         + "              1       16 B           16       16 B              16              22   100.00 %        552 B             552   100.00 %      +--java.util.ImmutableCollections$ListN\n"
                         + "              1       56 B           56       56 B              56              21    95.45 %        536 B             536    97.10 %      |  +--[Ljava.lang.Object; ListN.elements [10 of 10 used (100.00 %)]\n"
                         + "             10       24 B           24      240 B             240              20    95.24 %        480 B             480    89.55 %      |  |  +--java.lang.String [i]\n"
                         + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n");
 
-        thenClassHistogramIs( //
-                "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
+            thenClassHistogramIs( //
+                  "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
                         + "             22   100.00 %       25 B           25      552 B             552   100.00 %   (total)\n"
                         + "             10    45.45 %       24 B           24      240 B             240    43.48 %      +--java.lang.String\n"
                         + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--java.lang.String [i]\n"
@@ -270,6 +271,37 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
                         + "              1     4.55 %       56 B           56       56 B              56    10.14 %      +--[Ljava.lang.Object;\n"
                         + "              1   100.00 %       56 B           56       56 B              56   100.00 %      |  +--[Ljava.lang.Object; ListN.elements\n"
                         + "              1     4.55 %       16 B           16       16 B              16     2.90 %      +--java.util.ImmutableCollections$ListN\n");
+        } else {
+            thenFootprintIs( //
+                  "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
+                        + "              22   100.00 %           --      560 B             560   100.00 %   (total)\n"
+                        + "              10    45.45 %           24      240 B             240    42.86 %   java.lang.String\n"
+                        + "              10    45.45 %           24      240 B             240    42.86 %   [B\n"
+                        + "               1     4.55 %           56       56 B              56    10.00 %   [Ljava.lang.Object;\n"
+                        + "               1     4.55 %           24       24 B              24     4.29 %   java.util.ImmutableCollections$ListN\n");
+
+            thenHeapTreeIs( //
+                  "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
+                        + "              1       24 B           24       24 B              24              22   100.00 %        560 B             560   100.00 %   (total)\n"
+                        + "              1       24 B           24       24 B              24              22   100.00 %        560 B             560   100.00 %      +--java.util.ImmutableCollections$ListN\n"
+                        + "              1       56 B           56       56 B              56              21    95.45 %        536 B             536    95.71 %      |  +--[Ljava.lang.Object; ListN.elements [10 of 10 used (100.00 %)]\n"
+                        + "             10       24 B           24      240 B             240              20    95.24 %        480 B             480    89.55 %      |  |  +--java.lang.String [i]\n"
+                        + "             10       24 B           24      240 B             240              10    50.00 %        240 B             240    50.00 %      |  |  |  +--[B String.value [10 of 10 used (100.00 %)]\n");
+
+            thenClassHistogramIs( //
+                  "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
+                        + "             22   100.00 %       25 B           25      560 B             560   100.00 %   (total)\n"
+                        + "             10    45.45 %       24 B           24      240 B             240    42.86 %      +--java.lang.String\n"
+                        + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--java.lang.String [i]\n"
+                        + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  |  +--[Ljava.lang.Object; ListN.elements\n"
+                        + "             10    45.45 %       24 B           24      240 B             240    42.86 %      +--[B\n"
+                        + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--[B String.value\n"
+                        + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  |  +--java.lang.String [i]\n"
+                        + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  |  |  +--[Ljava.lang.Object; ListN.elements\n"
+                        + "              1     4.55 %       56 B           56       56 B              56    10.00 %      +--[Ljava.lang.Object;\n"
+                        + "              1   100.00 %       56 B           56       56 B              56   100.00 %      |  +--[Ljava.lang.Object; ListN.elements\n"
+                        + "              1     4.55 %       24 B           24       24 B              24     4.29 %      +--java.util.ImmutableCollections$ListN\n");
+        }
     }
 
     @Test
