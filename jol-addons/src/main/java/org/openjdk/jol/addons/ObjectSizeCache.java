@@ -26,6 +26,9 @@ package org.openjdk.jol.addons;
 
 import gnu.trove.map.TObjectLongMap;
 import gnu.trove.map.hash.TObjectLongHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+
 import org.openjdk.jol.vm.VM;
 import org.openjdk.jol.vm.VirtualMachine;
 
@@ -34,7 +37,28 @@ import java.util.function.ToLongFunction;
 
 public interface ObjectSizeCache extends org.openjdk.jol.info.ObjectSizeCache {
 
-    class WithTObjectLongMap implements org.openjdk.jol.info.ObjectSizeCache {
+    class WithObject2LongMap implements ObjectSizeCache {
+
+        private final VirtualMachine           vm;
+        private final Object2LongMap<Class<?>> map;
+
+        public WithObject2LongMap(int capacity) {
+            vm = VM.current();
+            map = new Object2LongOpenHashMap<>(capacity);
+        }
+
+        @Override
+        public long get(Class<?> cl, Object e) {
+            return map.computeIfAbsent(cl, c -> vm.sizeOf(e));
+        }
+
+        @Override
+        public int size() {
+            return map.size();
+        }
+    }
+
+    class WithTObjectLongMap implements ObjectSizeCache {
 
         private final VirtualMachine vm;
         private final TObjectLongMap<Class<?>> map;

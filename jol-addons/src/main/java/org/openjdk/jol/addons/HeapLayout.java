@@ -118,7 +118,7 @@ public class HeapLayout extends HeapStats {
                 .withIdentitySet(identitySet) //
                 .withStackCapacity(stackCapacity) //
                 .withArraySizeCache(new ArraySizeCache.Precalculated()) //
-                .withObjectSizeCache(new ObjectSizeCache.WithTObjectLongMap(objectSizeCacheCapacity)) //
+                .withObjectSizeCache(new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity)) //
                 .getTree(HeapLayout.Builder::new, nodeFactory::createFieldNode, nodeFactory::createArrayIndexNode, nodeFactory::recycleNode, roots);
 
         return builder.build();
