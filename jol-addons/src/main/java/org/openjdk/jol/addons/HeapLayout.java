@@ -27,6 +27,7 @@ package org.openjdk.jol.addons;
 import org.openjdk.jol.info.ArraySizeCache;
 import org.openjdk.jol.info.HeapWalker;
 import org.openjdk.jol.info.VisitedIdentities;
+import org.openjdk.jol.util.SimpleStack;
 
 import javax.annotation.Nonnull;
 import java.io.PrintWriter;
@@ -83,7 +84,7 @@ public class HeapLayout extends HeapStats {
     }
 
     /**
-     * Parse the object graph starting from the given instance.
+     * Parse the object graph starting from the given instance(s).
      *
      * @param roots root instances to start from
      * @return object graph
@@ -98,28 +99,50 @@ public class HeapLayout extends HeapStats {
     }
 
     /**
-     * Parse the object graph starting from the given instance.
+     * Parse the object graph starting from the given instance(s).
      *
      * @param tc                      TraversalControl employed to restrict heap parsing to an imaginary directed acyclic graph of interest
      * @param hd                      HistogramDeduplicator to make sure the output is a lot less redundant but instead far more expressive
      * @param identitySet             prepared identity set
      * @param stackCapacity           pass the value from the previous run or a guesstimate to reduce incremental growth costs
      * @param objectSizeCacheCapacity pass the value from the previous run or a guesstimate to reduce incremental growth costs
-     * @param roots                   root instances to start from
+     * @param roots                   root instance(s) to start from
      * @return object graph
      */
     public static HeapLayout parseInstance(TraversalControl tc, HistogramDeduplicator hd,
                                            VisitedIdentities identitySet, int stackCapacity,
                                            int objectSizeCacheCapacity, Object... roots) {
 
+        final ObjectSizeCache objectSizeCache = new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity);
+        final SimpleStack<Object> stack = new SimpleStack<>(stackCapacity);
         final InitialNodeFactory nodeFactory = new InitialNodeFactory(hd, stackCapacity);
+
+        return parseInstance(tc, identitySet, objectSizeCache, stack, nodeFactory, roots);
+    }
+
+    /**
+     * Parse the object graph starting from the given instance(s).
+     *
+     * @param tc              TraversalControl employed to restrict heap parsing to an imaginary directed acyclic graph of interest
+     * @param identitySet     prepared identity set
+     * @param objectSizeCache prepared object size cache
+     * @param stack           prepared node stack
+     * @param nodeFactory     prepared node factory
+     * @param roots           root instance(s) to start from
+     * @return object graph
+     */
+    public static HeapLayout parseInstance(TraversalControl tc,
+                                           VisitedIdentities identitySet, ObjectSizeCache objectSizeCache,
+                                           SimpleStack<Object> stack, InitialNodeFactory nodeFactory,
+                                           Object... roots) {
+
         final HeapLayout.Builder builder = new HeapWalker() //
-                .withConditionalRecursion(tc::isChildToBeTraversed) //
-                .withIdentitySet(identitySet) //
-                .withStackCapacity(stackCapacity) //
-                .withArraySizeCache(new ArraySizeCache.Precalculated()) //
-                .withObjectSizeCache(new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity)) //
-                .getTree(HeapLayout.Builder::new, nodeFactory::createFieldNode, nodeFactory::createArrayIndexNode, nodeFactory::recycleNode, roots);
+              .withConditionalRecursion(tc::isChildToBeTraversed) //
+              .withIdentitySet(identitySet) //
+              .withObjectSizeCache(objectSizeCache) //
+              .withArraySizeCache(new ArraySizeCache.Precalculated()) //
+              .withStack(stack) //
+              .getTree(HeapLayout.Builder::new, nodeFactory::createFieldNode, nodeFactory::createArrayIndexNode, nodeFactory::recycleNode, roots);
 
         return builder.build();
     }
