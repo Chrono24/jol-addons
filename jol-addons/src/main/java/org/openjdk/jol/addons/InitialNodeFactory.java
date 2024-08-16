@@ -48,7 +48,7 @@ public final class InitialNodeFactory {
     }
 
     public void recycleNode(InitialNode node) {
-        recycler.push(node);
+        recycler.push(node.reset());
     }
 
     @Nonnull
@@ -69,7 +69,7 @@ public final class InitialNodeFactory {
     }
 
     private InitialNode tryReuseNode(ClassPath path, Object o) {
-        final InitialNode node = recycler.isEmpty() ? new InitialNode() : recycler.pop().reset();
+        final InitialNode node = recycler.isEmpty() ? new InitialNode() : recycler.pop();
 
         node.setPath(path);
         node.setObject(o);
