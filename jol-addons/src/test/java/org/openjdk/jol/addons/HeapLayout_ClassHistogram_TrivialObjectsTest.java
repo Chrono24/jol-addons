@@ -34,8 +34,8 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot(false);
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Boolean\n");
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Boolean\n");
     }
 
     @Test
@@ -43,8 +43,8 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot((byte) 0);
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Byte\n");
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Byte\n");
     }
 
     @Test
@@ -52,8 +52,8 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot((short) 0);
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Short\n");
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Short\n");
     }
 
     @Test
@@ -61,8 +61,8 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot(0);
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Integer\n");
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Integer\n");
     }
 
     @Test
@@ -70,8 +70,8 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot(0L);
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n" +
-                        "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Long\n");
+                "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n" +
+                "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Long\n");
     }
 
     @Test
@@ -79,8 +79,8 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot(0.0f);
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Float\n");
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Float\n");
     }
 
     @Test
@@ -88,8 +88,8 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot(0.0);
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n" +
-                        "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Double\n");
+                "              1   100.00 %       24 B           24       24 B              24   100.00 %   (total)\n" +
+                "              1   100.00 %       24 B           24       24 B              24   100.00 %      +--java.lang.Double\n");
     }
 
     @Test
@@ -97,7 +97,7 @@ public class HeapLayout_ClassHistogram_TrivialObjectsTest extends BaseHeapLayout
         givenRoot(new Object());
         thenClassHistogramIs( //
                 "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
-                        "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Object\n");
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %   (total)\n" +
+                "              1   100.00 %       16 B           16       16 B              16   100.00 %      +--java.lang.Object\n");
     }
 }

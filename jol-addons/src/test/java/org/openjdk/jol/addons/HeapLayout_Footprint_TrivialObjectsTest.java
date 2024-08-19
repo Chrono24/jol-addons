@@ -34,8 +34,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot(false);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
-                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Boolean\n");
+                "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Boolean\n");
     }
 
     @Test
@@ -43,8 +43,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot((byte) 0);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
-                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Byte\n");
+                "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Byte\n");
     }
 
     @Test
@@ -52,8 +52,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot((char) 0);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
-                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Character\n");
+                "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Character\n");
     }
 
     @Test
@@ -61,8 +61,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot((short) 0);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
-                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Short\n");
+                "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Short\n");
     }
 
     @Test
@@ -70,8 +70,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot(0);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
-                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Integer\n");
+                "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Integer\n");
     }
 
     @Test
@@ -79,8 +79,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot(0.0f);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
-                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Float\n");
+                "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Float\n");
     }
 
     @Test
@@ -88,8 +88,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot(0L);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
-                        "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Long\n");
+                "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
+                "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Long\n");
     }
 
     @Test
@@ -97,8 +97,8 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot(0.0);
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
-                        "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Double\n");
+                "               1   100.00 %           --       24 B              24   100.00 %   (total)\n" +
+                "               1   100.00 %           24       24 B              24   100.00 %   java.lang.Double\n");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class HeapLayout_Footprint_TrivialObjectsTest extends BaseHeapLayoutTest 
         givenRoot(new Object());
         thenFootprintIs( //
                 "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
-                        "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
-                        "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Object\n");
+                "               1   100.00 %           --       16 B              16   100.00 %   (total)\n" +
+                "               1   100.00 %           16       16 B              16   100.00 %   java.lang.Object\n");
     }
 }
