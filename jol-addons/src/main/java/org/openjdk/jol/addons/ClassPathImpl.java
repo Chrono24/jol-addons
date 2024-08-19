@@ -68,15 +68,16 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
 
     @Override
     public ClassPathImpl computeIfAbsent(String label, Class<?> clazz, HistogramDeduplicator hd, boolean arrayIndexed) {
+        if (this.isTerminal()) {
+            return this;
+        }
+
         if (children == null) {
             children = new HashMap<>();
         }
+
         final List<Object> tail = List.of(label, clazz);
         return children.computeIfAbsent(tail, t -> {
-            if (this.isTerminal()) {
-                return this;
-            }
-
             boolean terminal = hd.isTerminal(clazz);
             if (terminal) {
                 LOG.debug("terminal symbol {}", clazz);
