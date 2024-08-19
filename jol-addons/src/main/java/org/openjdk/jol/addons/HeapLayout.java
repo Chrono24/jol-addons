@@ -296,8 +296,8 @@ public class HeapLayout extends HeapStats {
         @Nonnull
         private PermNode createRegularPermNode(DiyTrie.Node<Object, ClassPath, BaseNode> trieNode, BaseNode gatheringNode, String parentClassName, String label,
                                                boolean isRoot, boolean isClass, boolean isTerminalSymbol, boolean isEmptyRow, boolean aggregate) {
-            PermNode permNode;
-            permNode = isTerminalSymbol ? new PermNode.Ellipsis(label) : new PermNode(label);
+
+            PermNode permNode = isTerminalSymbol ? new PermNode.Ellipsis(label) : new PermNode(label);
 
             if (isEmptyRow) {  // row has no own values, substitute aggregation of children instead
                 trieNode.values().stream().map(DiyTrie.Node::getValue).forEach(permNode::add);
