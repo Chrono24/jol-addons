@@ -84,8 +84,8 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
             }
 
             // trivial case: List / Map / whatever nodes pointing to instances of same class within ADT
-            if (isMerged(label, clazz)) {
-                LOG.debug("merging tail {}", tail);
+            if ( isNestedInstanceMerged(clazz)) {
+                LOG.debug("merging nested instance {}", tail);
                 return this;
             }
 
@@ -178,15 +178,17 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
         this.terminal = terminal;
     }
 
-    private boolean isMerged(String label, Class<?> clazz) {
+    private boolean isNestedInstanceMerged(Class<?> clazz) {
         if (this.isEmpty()) {
             return false;
         }
 
         // Same class and member with suspicious name? Display on same level, please - don't build an infinite slide to the right
         // First and last in original ClassPath are always Class<?>
-        if (this.get(this.size() - 1).equals(clazz)) {
-            return HistogramDeduplicator.isFieldMerged(label);
+        Object parentClazzCandidate = this.get(this.size() - 1);
+        if ( parentClazzCandidate instanceof Class<?>) {
+            Class<?>parentClazz = ((Class<?>) parentClazzCandidate);
+            return HistogramDeduplicator.isNestedInstanceMerged(parentClazz, clazz);
         }
 
         return false;

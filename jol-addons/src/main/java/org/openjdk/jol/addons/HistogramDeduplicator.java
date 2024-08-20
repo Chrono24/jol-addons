@@ -24,10 +24,13 @@
  */
 package org.openjdk.jol.addons;
 
+import static java.util.stream.Collectors.toUnmodifiableMap;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 
@@ -39,60 +42,61 @@ public class HistogramDeduplicator {
             "java.nio.channels.FileChannel" //
     )).build();
 
-    private static final Map<String, Map<String, String>> MERGED_FIELDS = Map.of( //
-            "java.util.LinkedList", //
-            Map.of( //
-                    "first", "first/last", //
-                    "last", "first/last" //
-            ), //
+    private static final Set<String> MERGE_NESTED_INSTANCES_OF_CLASSES = Set.of( //
+            // java.util
             "java.util.LinkedList$Node", //
-            Map.of( //
-                    "prev", "prev/next", //
-                    "next", "prev/next" //
-            ), //
             "java.util.TreeMap$Entry", //
-            Map.of( //
-                    "parent", "parent/left/right", //
-                    "left", "parent/left/right", //
-                    "right", "parent/left/right" //
-            ), //
-            "java.util.LinkedHashMap", //
-            Map.of( //
-                    "head", "head/tail", //
-                    "tail", "head/tail" //
-            ), //
             "java.util.LinkedHashMap$Entry", //
-            Map.of( //
-                    "next", "next/before/after", //
-                    "before", "next/before/after", //
-                    "after", "next/before/after" //
-            ), //
+            "java.util.HashMap$Node", //
+            "java.util.HashMap$TreeNode",
+
+            // java.util.concurrent
+            "java.util.concurrent.ConcurrentSkipListMap$Node", //
             "java.util.concurrent.ConcurrentSkipListMap$Index", //
-            Map.of( //
-                    "down", "down/right", //
-                    "right", "down/right" //
-            ), //
-            "java.util.concurrent.ConcurrentHashMap$TreeBin", //
-            Map.of( //
-                    "first", "first/root", //
-                    "root", "first/root" //
-            ), //
+            "java.util.concurrent.ConcurrentHashMap$Node",  //
+            "java.util.concurrent.ConcurrentHashMap$TreeBin",  //
+            "java.util.concurrent.LinkedBlockingDeque$Node", //
+            "java.util.concurrent.LinkedBlockingQueue$Node", //
+            "java.util.concurrent.ConcurrentLinkedQueue$Node", //
+            "java.util.concurrent.SynchronousQueue$TransferQueue$QNode", //
+            "java.util.concurrent.SynchronousQueue$TransferStack$SNode", //
+
+            // guava
+            "com.google.common.cache.LocalCache$WriteThroughEntry", //
+            "com.google.common.cache.LocalCache$WeakAccessWriteEntry", //
+            "com.google.common.cache.LocalCache$WeakWriteEntry", //
+            "com.google.common.cache.LocalCache$WeakAccessEntry", //
+            "com.google.common.cache.LocalCache$WeakEntry", //
             "com.google.common.cache.LocalCache$StrongAccessWriteEntry", //
-            Map.of( //
-                    "nextAccess", "nextAccess/previousAccess/nextWrite/previousWrite", //
-                    "previousAccess", "nextAccess/previousAccess/nextWrite/previousWrite", //
-                    "nextWrite", "nextAccess/previousAccess/nextWrite/previousWrite", //
-                    "previousWrite", "nextAccess/previousAccess/nextWrite/previousWrite" //
-            ) //
+            "com.google.common.cache.LocalCache$StrongWriteEntry", //
+            "com.google.common.cache.LocalCache$StrongAccessEntry", //
+            "com.google.common.cache.LocalCache$StrongEntry" //
     );
 
-    private static final Set<String> MERGED_FIELD_NAMES = Stream.concat(
-            HistogramDeduplicator.MERGED_FIELDS.values().stream().flatMap(m -> m.keySet().stream()).distinct(),
-            HistogramDeduplicator.MERGED_FIELDS.values().stream().flatMap(m -> m.values().stream()).distinct()).collect(Collectors.toSet());
-    private final Set<String> terminalClasses;
+    private static final Map<String, Map<String, String>> MERGE_FIELDS_PER_CLASS;
 
-    public HistogramDeduplicator(Set<String> terminalClasses) {
-        this.terminalClasses = terminalClasses;
+    static {
+        Map<String, String> firstAndLast = mergeFields("first", "last");
+        Map<String, String> headAndTail = mergeFields("head", "tail");
+
+        MERGE_FIELDS_PER_CLASS = Map.of( //
+                // java.util
+                "java.util.LinkedList", firstAndLast, //
+                "java.util.LinkedHashMap", headAndTail, //
+
+                // java.util.concurrent
+                "java.util.concurrent.ConcurrentHashMap$Node", mergeFields("table", "nextTable"), //
+                "java.util.concurrent.LinkedBlockingDeque", firstAndLast, //
+                "java.util.concurrent.LinkedBlockingQueue", mergeFields("head", "last"), //
+                "java.util.concurrent.ConcurrentLinkedQueue", headAndTail //
+        );
+    }
+
+    private static Map<String, String> mergeFields(String... fieldNames) {
+        String mergedFieldName = String.join("/", fieldNames);
+        return Stream.concat(Arrays.stream(fieldNames), Stream.of(mergedFieldName))
+                .distinct()
+                .collect(toUnmodifiableMap(Function.identity(), ignored -> mergedFieldName));
     }
 
     public static Builder builder() {
@@ -100,15 +104,22 @@ public class HistogramDeduplicator {
     }
 
     public static String getMergedField(Class<?> clazz, String fieldName) {
-        return MERGED_FIELDS.getOrDefault(clazz.getName(), Collections.emptyMap()).getOrDefault(fieldName, fieldName);
+        return MERGE_FIELDS_PER_CLASS.getOrDefault(clazz.getName(), Collections.emptyMap()).getOrDefault(fieldName, fieldName);
     }
 
     public static HistogramDeduplicator instance() {
         return INSTANCE;
     }
 
-    public static boolean isFieldMerged(String fieldName) {
-        return MERGED_FIELD_NAMES.contains(fieldName);
+    public static boolean isNestedInstanceMerged(Class<?> parentInstanceClass, Class<?> childInstanceClass) {
+        // TODO define tuples of classes to be merged, and the means to reduce class names to the merger, just like sibling field names
+        return parentInstanceClass.equals(childInstanceClass) && MERGE_NESTED_INSTANCES_OF_CLASSES.contains(childInstanceClass.getName());
+    }
+
+    private final Set<String> terminalClasses;
+
+    public HistogramDeduplicator(Set<String> terminalClasses) {
+        this.terminalClasses = terminalClasses;
     }
 
     public boolean isTerminal(Class<?> clazz) {
