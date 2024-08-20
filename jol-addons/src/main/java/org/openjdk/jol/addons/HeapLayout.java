@@ -39,7 +39,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
-import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
 import static java.util.Comparator.comparingLong;
@@ -91,8 +90,8 @@ public class HeapLayout extends HeapStats {
      */
     public static HeapLayout parseSimpleInstance(Object... roots) {
 
-        final InitialNodeFactory nodeFactory = new InitialNodeFactory(HistogramDeduplicator.instance(), 0);
-        final HeapLayout.Builder builder = new HeapWalker().getTree(HeapLayout.Builder::new,
+        InitialNodeFactory nodeFactory = new InitialNodeFactory(HistogramDeduplicator.instance(), 0);
+        HeapLayout.Builder builder = new HeapWalker().getTree(HeapLayout.Builder::new,
                 nodeFactory::createFieldNode, nodeFactory::createArrayIndexNode, nodeFactory::recycleNode, roots);
 
         return builder.build();
@@ -113,9 +112,9 @@ public class HeapLayout extends HeapStats {
                                            VisitedIdentities identitySet, int stackCapacity,
                                            int objectSizeCacheCapacity, Object... roots) {
 
-        final ObjectSizeCache objectSizeCache = new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity);
-        final SimpleStack<Object> stack = new SimpleStack<>(stackCapacity);
-        final InitialNodeFactory nodeFactory = new InitialNodeFactory(hd, stackCapacity);
+        ObjectSizeCache objectSizeCache = new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity);
+        SimpleStack<Object> stack = new SimpleStack<>(stackCapacity);
+        InitialNodeFactory nodeFactory = new InitialNodeFactory(hd, stackCapacity);
 
         return parseInstance(tc, identitySet, objectSizeCache, stack, nodeFactory, roots);
     }
@@ -136,7 +135,7 @@ public class HeapLayout extends HeapStats {
                                            SimpleStack<Object> stack, InitialNodeFactory nodeFactory,
                                            Object... roots) {
 
-        final HeapLayout.Builder builder = new HeapWalker() //
+        HeapLayout.Builder builder = new HeapWalker() //
               .withConditionalRecursion(tc::isChildToBeTraversed) //
               .withIdentitySet(identitySet) //
               .withObjectSizeCache(objectSizeCache) //
@@ -189,9 +188,9 @@ public class HeapLayout extends HeapStats {
 
         private static final int SHORTCUT_INIT_CAP = 1 << 9;  // avoid resizing in most cases; TODO: render configurable
 
-        private final String description;
+        private String description;
 
-        private final HeapStats stats = new HeapStats();
+        private HeapStats stats = new HeapStats();
 
         private final DiyTrie<Object, ClassPath, BaseNode> classHistogramDrillDown = new DiyTrie<>();
         private final DiyTrie<Object, ClassPath, BaseNode> heapTreeDrillDown = new DiyTrie<>();
@@ -321,17 +320,19 @@ public class HeapLayout extends HeapStats {
         @Nonnull
         private PermNode[] getChildren(DiyTrie.Node<Object, ClassPath, BaseNode> trieNode, PermNode permNode, boolean aggregate, boolean emptyRow) {
 
-            final PermNode[] children = trieNode.values()
+            PermNode[] children = trieNode.values()
                     .stream()
                     .map(DiyTrie.Node::getValue)
                     .map(PermNode.class::cast)
-                    .sorted(
-                            comparingLong(PermNode::getTotalSize).thenComparing(PermNode::getSize).thenComparing(PermNode::getCount).thenComparing(PermNode::getLabel))
+                    .sorted(comparingLong(PermNode::getTotalSize)
+                            .thenComparing(PermNode::getSize)
+                            .thenComparing(PermNode::getCount)
+                            .thenComparing(PermNode::getLabel))
                     .toArray(PermNode[]::new);
 
             if (aggregate) {
-                final ToLongFunction<PermNode> getSize;
-                final ToIntFunction<PermNode> getCount;
+                ToLongFunction<PermNode> getSize;
+                ToLongFunction<PermNode> getCount;
                 if (emptyRow) {
                     getSize = PermNode::getRetainedChildSize;
                     getCount = PermNode::getRetainedChildCount;
@@ -339,9 +340,9 @@ public class HeapLayout extends HeapStats {
                     getSize = PermNode::getTotalSize;
                     getCount = PermNode::getTotalCount;
                 }
-                final long childrenTotalSize = Arrays.stream(children).mapToLong(getSize).sum();
+                long childrenTotalSize = Arrays.stream(children).mapToLong(getSize).sum();
                 permNode.setRetainedChildSize(childrenTotalSize);
-                final int childrenTotalCount = Arrays.stream(children).mapToInt(getCount).sum();
+                long childrenTotalCount = Arrays.stream(children).mapToLong(getCount).sum();
                 permNode.setRetainedChildCount(childrenTotalCount);
             }
 
@@ -353,7 +354,7 @@ public class HeapLayout extends HeapStats {
                                                            boolean isClass, ClassPath classPath) {
 
             if (nodeContext.getDepth() > 0) {
-                final Class<?> parentClass = (Class<?>) (nodeContext.getParent().getNode().getKeyElement() instanceof Class ?
+                Class<?> parentClass = (Class<?>) (nodeContext.getParent().getNode().getKeyElement() instanceof Class ?
                         nodeContext.getParent().getNode().getKeyElement() :
                         nodeContext.getParent().getParent().getNode().getKeyElement());
                 return isClass ? parentClass.getName() : parentClass.isArray() ? "" : parentClass.getSimpleName();
@@ -367,7 +368,7 @@ public class HeapLayout extends HeapStats {
                                                      ClassPath classPath) {
 
             if (!isRoot && !isClass) {
-                final Class<?> parentClass = (Class<?>) classPath.get(classPath.size() - 3);
+                Class<?> parentClass = (Class<?>) classPath.get(classPath.size() - 3);
                 return parentClass.isArray() ? "" : parentClass.getSimpleName();
             } else {
                 return "";

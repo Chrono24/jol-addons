@@ -38,8 +38,8 @@ final class InitialNode extends BaseNode implements HeapWalker.Node {
     }
 
     @Override
-    public int getCount() {
-        return 1; // one InitialNode per heap object
+    public long getCount() {
+        return 1L; // one InitialNode per heap object
     }
 
     public Class<?> getObjectClass() {

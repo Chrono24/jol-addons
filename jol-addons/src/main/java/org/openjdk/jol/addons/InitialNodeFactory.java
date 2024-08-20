@@ -39,15 +39,15 @@ public final class InitialNodeFactory {
         recycler = new SimpleStack<>(expectedStackDepth);
     }
 
-    public InitialNode createArrayIndexNode(InitialNode parent, int idx, int depth, Object o) {
+    InitialNode createArrayIndexNode(InitialNode parent, int idx, int depth, Object o) {
         return getNode(parent, "[i]", o, true);
     }
 
-    public InitialNode createFieldNode(InitialNode parent, String label, int depth, Object o) {
+    InitialNode createFieldNode(InitialNode parent, String label, int depth, Object o) {
         return getNode(parent, label, o, false);
     }
 
-    public void recycleNode(InitialNode node) {
+    void recycleNode(InitialNode node) {
         recycler.push(node.reset());
     }
 

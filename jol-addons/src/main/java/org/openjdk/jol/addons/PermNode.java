@@ -29,10 +29,13 @@ import com.google.common.base.Strings;
 class PermNode extends BaseNode implements NodeWithChildren<PermNode> {
 
     private final String _label;
+
     private String _parentClassName;
     private String _prefix;
+
     private int _retainedChildSize;
     private int _retainedChildCount;
+
     private PermNode[] _children;
     private PermNode _parent;
 
@@ -80,27 +83,30 @@ class PermNode extends BaseNode implements NodeWithChildren<PermNode> {
         _prefix = prefix;
     }
 
-    public int getRetainedChildCount() {
-        return _retainedChildCount;
+    public long getRetainedChildCount() {
+        return Integer.toUnsignedLong(_retainedChildCount);
     }
 
-    public void setRetainedChildCount(int retainedChildCount) {
-        _retainedChildCount = retainedChildCount;
+    public void setRetainedChildCount(long retainedChildCount) {
+        checkOverflow(retainedChildCount);
+        _retainedChildCount = (int)retainedChildCount;
     }
 
     public long getRetainedChildSize() {
-        return ((long) _retainedChildSize) << SIZE_SHIFT;
+        return shiftIn(Integer.toUnsignedLong(_retainedChildSize));
     }
 
     public void setRetainedChildSize(long retainedChildSize) {
-        _retainedChildSize = (int) (retainedChildSize >> SIZE_SHIFT);
+        long shifted = shiftOut(retainedChildSize);
+        checkOverflow(shifted);
+        _retainedChildSize = (int)shifted;
     }
 
     public double getSizePercentage(PermNode parent) {
         return percent(getTotalSize(), parent.getTotalSize());
     }
 
-    public int getTotalCount() {
+    public long getTotalCount() {
         return getCount() + getRetainedChildCount();
     }
 

@@ -29,22 +29,39 @@ import org.openjdk.jol.vm.VM;
 
 abstract class BaseNode {
 
-    protected static final int SIZE_SHIFT = 31 - Integer.numberOfLeadingZeros(VM.current().objectAlignment());
+    private static final int SIZE_SHIFT = 31 - Integer.numberOfLeadingZeros(VM.current().objectAlignment());
+
+    private static final long UINT_MASK = 0x00000000ffffffffL;
+
+    public static long shiftOut(long size) {
+        return size >>> SIZE_SHIFT;
+    }
+
+    public static long shiftIn(long size) {
+        return size << SIZE_SHIFT;
+    }
+
+    public static void checkOverflow(long unsignedInteger) {
+        if ( (unsignedInteger & UINT_MASK) != unsignedInteger ) {
+            throw new ArithmeticException("unsigned integer overflow");
+        }
+    }
+
+    public static double percent(long part, long whole) {
+        return whole == 0 ? Double.POSITIVE_INFINITY : (double)part * 100.0 / (double)whole;
+    }
+
     private int _count;
     private int _size;
+
     private long _length;
     private long _used;
 
-    public static double percent(long part, long whole) {
-        return whole == 0 ? Double.POSITIVE_INFINITY : (double) part * 100.0 / (double) whole;
-    }
-
     public void add(BaseNode other) {
-        _count += other.getCount();
-        _size += other._size;
-
-        _length += other._length;
-        _used += other._used;
+        setCount(getCount() + other.getCount());
+        setSize(getSize() + other.getSize());
+        setLength(Math.addExact(getLength(), other.getLength()));
+        setUsed(Math.addExact(getUsed(), other.getUsed()));
     }
 
     public void clearArrayInfo() {
@@ -52,28 +69,20 @@ abstract class BaseNode {
         _used = 0;
     }
 
-    public int getAverage() {
-        return _count == 0 ? 0 : (int) (getSize() / (long) getCount());
+    public long getAverage() {
+        return _count == 0 ? 0 : Long.divideUnsigned(getSize(), getCount());
     }
 
-    public int getCount() {
-        return _count;
+    public long getCount() {
+        return Integer.toUnsignedLong(_count);
     }
 
     public long getLength() {
         return _length;
     }
 
-    public void setLength(long length) {
-        _length = length;
-    }
-
     public long getSize() {
-        return ((long) _size) << SIZE_SHIFT;
-    }
-
-    public void setSize(long size) {
-        _size = (int) (size >> SIZE_SHIFT);
+        return Integer.toUnsignedLong(_size) << SIZE_SHIFT;
     }
 
     public double getUsePercentage() {
@@ -82,10 +91,6 @@ abstract class BaseNode {
 
     public long getUsed() {
         return _used;
-    }
-
-    public void setUsed(long used) {
-        _used = used;
     }
 
     public boolean hasArrayInfo() {
@@ -100,5 +105,24 @@ abstract class BaseNode {
         _used = 0;
 
         return this;
+    }
+
+    public void setLength(long length) {
+        _length = length;
+    }
+
+    public void setSize(long size) {
+        long shifted = size >>> SIZE_SHIFT;
+        checkOverflow(shifted);
+        _size = (int) shifted;
+    }
+
+    public void setUsed(long used) {
+        _used = used;
+    }
+
+    void setCount(long count) {
+        checkOverflow(count);
+        _count = (int) count;
     }
 }
