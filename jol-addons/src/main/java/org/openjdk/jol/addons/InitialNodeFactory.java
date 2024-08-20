@@ -32,11 +32,13 @@ import javax.annotation.Nonnull;
 public final class InitialNodeFactory {
 
     private final HistogramDeduplicator histogramDeduplicator;
-    private final SimpleStack<InitialNode> recycler;
+    private final SimpleStack<InitialNode> recyclerForObjects;
+    private final SimpleStack<InitialNode> recyclerForArrays;
 
     public InitialNodeFactory(HistogramDeduplicator histogramDeduplicator, int expectedStackDepth) {
         this.histogramDeduplicator = histogramDeduplicator;
-        recycler = new SimpleStack<>(expectedStackDepth);
+        recyclerForObjects = new SimpleStack<>(expectedStackDepth);
+        recyclerForArrays = new SimpleStack<>(Math.max(1 << 5, expectedStackDepth >>> 4));
     }
 
     InitialNode createArrayIndexNode(InitialNode parent, int idx, int depth, Object o) {
@@ -47,18 +49,28 @@ public final class InitialNodeFactory {
         return getNode(parent, label, o, false);
     }
 
+    private SimpleStack<InitialNode> getRecyclerFor(InitialNode node) {
+        return getRecyclerFor(node.isArrayInfo());
+    }
+
+    private SimpleStack<InitialNode> getRecyclerFor(boolean isArray) {
+        return isArray ? recyclerForArrays : recyclerForObjects;
+    }
+
     void recycleNode(InitialNode node) {
-        recycler.push(node.reset());
+        getRecyclerFor(node).push(node.reset());
     }
 
     @Nonnull
     private InitialNode getNode(InitialNode parent, String label, Object o, boolean arrayIndexed) {
-        final ClassPath path = getPath(parent, o, label, arrayIndexed);
-        return tryReuseNode(path, o);
+        ClassPath path = getPath(parent, o, label, arrayIndexed);
+
+        return tryReuseNode(path, o, o.getClass().isArray());
     }
 
     private ClassPath getPath(InitialNode parent, Object o, String label, boolean arrayIndexed) {
-        final String mergedLabel = arrayIndexed || parent == null ? label : HistogramDeduplicator.getMergedField(parent.getObjectClass(), label);
+        String mergedLabel = arrayIndexed || parent == null ? label : HistogramDeduplicator.getMergedField(parent.getObjectClass(), label);
+
         if (parent != null) {
             return parent.getPath().computeIfAbsent(mergedLabel, o.getClass(), histogramDeduplicator, arrayIndexed);
         } else {
@@ -68,8 +80,9 @@ public final class InitialNodeFactory {
         }
     }
 
-    private InitialNode tryReuseNode(ClassPath path, Object o) {
-        final InitialNode node = recycler.isEmpty() ? new InitialNode() : recycler.pop();
+    private InitialNode tryReuseNode(ClassPath path, Object o, boolean isArray) {
+        SimpleStack<InitialNode> recycler = getRecyclerFor(isArray);
+        InitialNode node = recycler.isEmpty() ? isArray ? new InitialNodeForArray() : new InitialNode() : recycler.pop();
 
         node.setPath(path);
         node.setObject(o);

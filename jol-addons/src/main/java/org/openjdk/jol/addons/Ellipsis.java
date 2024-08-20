@@ -24,6 +24,14 @@
  */
 package org.openjdk.jol.addons;
 
-class GatheringNode extends BaseNode {
+class Ellipsis extends PermNode {
 
+    public Ellipsis(String label) {
+        super(label);
+    }
+
+    @Override
+    public String getArrayLabel() {
+        return " [...] (terminal)";
+    }
 }

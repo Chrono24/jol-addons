@@ -27,7 +27,7 @@ package org.openjdk.jol.addons;
 import org.openjdk.jol.info.HeapWalker;
 
 
-final class InitialNode extends BaseNode implements HeapWalker.Node {
+class InitialNode extends BaseNode implements HeapWalker.Node {
 
     private ClassPath path;
     private Object object;

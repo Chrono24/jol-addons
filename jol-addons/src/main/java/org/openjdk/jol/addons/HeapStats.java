@@ -38,7 +38,7 @@ public class HeapStats implements HeapWalker.Stats {
     private int identitySetCapacity;
     private int sizeCacheCapacity;
 
-    public HeapStats(HeapStats original) {
+    HeapStats(HeapStats original) {
         totalCount = original.totalCount();
         totalSize = original.totalSize();
         stackCapacity = original.stackCapacity();
@@ -46,7 +46,7 @@ public class HeapStats implements HeapWalker.Stats {
         sizeCacheCapacity = original.sizeCacheCapacity();
     }
 
-    public HeapStats(Object... roots) {
+    HeapStats(Object... roots) {
     }
 
     /**

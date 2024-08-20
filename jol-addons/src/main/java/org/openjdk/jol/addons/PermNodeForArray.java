@@ -24,6 +24,56 @@
  */
 package org.openjdk.jol.addons;
 
-class GatheringNode extends BaseNode {
+class PermNodeForArray extends PermNode {
 
+    private long _length;
+    private long _used;
+
+    public PermNodeForArray(String label) {
+        super(label);
+    }
+
+    @Override
+    protected void add(BaseNode other) {
+        super.add(other);
+
+        setLength(Math.addExact(this.getLength(), other.getLength()));
+        setUsed(Math.addExact(this.getUsed(), other.getUsed()));
+    }
+
+    @Override
+    public void clearArrayInfo() {
+        _length = 0;
+        _used = 0;
+    }
+
+    @Override
+    public long getLength() {
+        return _length;
+    }
+
+    @Override
+    public void setLength(long length) {
+        _length = length;
+    }
+
+    @Override
+    public double getUsePercentage() {
+        return percent(_used, _length);
+    }
+
+    @Override
+    public long getUsed() {
+        return _used;
+    }
+
+    @Override
+    public void setUsed(long used) {
+        _used = used;
+    }
+
+    @Override
+    public boolean isArrayInfo() {
+        return true;
+    }
 }

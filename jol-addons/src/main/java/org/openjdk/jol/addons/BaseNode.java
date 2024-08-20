@@ -41,33 +41,33 @@ abstract class BaseNode {
         return size << SIZE_SHIFT;
     }
 
-    public static void checkOverflow(long unsignedInteger) {
-        if ( (unsignedInteger & UINT_MASK) != unsignedInteger ) {
+    public static void checkOverflow( long unsignedInteger ) {
+        if ((unsignedInteger & UINT_MASK) != unsignedInteger) {
             throw new ArithmeticException("unsigned integer overflow");
         }
     }
 
-    public static double percent(long part, long whole) {
-        return whole == 0 ? Double.POSITIVE_INFINITY : (double)part * 100.0 / (double)whole;
+    public static double percent( long part, long whole ) {
+        if (part == 0) {
+            return 0.0;
+        }
+
+        if (whole == 0) {
+            return part >= 0 ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+        }
+
+        return (double)part * 100.0 / (double)whole;
     }
 
     private int _count;
     private int _size;
 
-    private long _length;
-    private long _used;
-
-    public void add(BaseNode other) {
+    protected void add( BaseNode other ) {
         setCount(getCount() + other.getCount());
         setSize(getSize() + other.getSize());
-        setLength(Math.addExact(getLength(), other.getLength()));
-        setUsed(Math.addExact(getUsed(), other.getUsed()));
     }
 
-    public void clearArrayInfo() {
-        _length = 0;
-        _used = 0;
-    }
+    public void clearArrayInfo() {}
 
     public long getAverage() {
         return _count == 0 ? 0 : Long.divideUnsigned(getSize(), getCount());
@@ -78,7 +78,7 @@ abstract class BaseNode {
     }
 
     public long getLength() {
-        return _length;
+        return 0;
     }
 
     public long getSize() {
@@ -86,43 +86,42 @@ abstract class BaseNode {
     }
 
     public double getUsePercentage() {
-        return percent(_used, _length);
+        return 0;
     }
 
     public long getUsed() {
-        return _used;
+        return 0;
     }
 
-    public boolean hasArrayInfo() {
-        return _length > 0;
+    public boolean isArrayInfo() {
+        return false;
     }
 
     public BaseNode reset() {
         _count = 0;
         _size = 0;
 
-        _length = 0;
-        _used = 0;
+        clearArrayInfo();
 
         return this;
     }
 
-    public void setLength(long length) {
-        _length = length;
+    public void setLength( long length ) {
+        throw new UnsupportedOperationException();
     }
 
-    public void setSize(long size) {
+    public void setSize( long size ) {
         long shifted = size >>> SIZE_SHIFT;
         checkOverflow(shifted);
-        _size = (int) shifted;
+        _size = (int)shifted;
     }
 
-    public void setUsed(long used) {
-        _used = used;
+    public void setUsed( long used ) {
+        throw new UnsupportedOperationException();
     }
 
-    void setCount(long count) {
+    void setCount( long count ) {
         checkOverflow(count);
-        _count = (int) count;
+        _count = (int)count;
     }
 }

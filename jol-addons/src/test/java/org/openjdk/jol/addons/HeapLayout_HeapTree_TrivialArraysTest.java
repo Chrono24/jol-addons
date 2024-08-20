@@ -35,7 +35,7 @@ public class HeapLayout_HeapTree_TrivialArraysTest extends BaseHeapLayoutTest {
         thenHeapTreeIs( //
                 "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n" +
                 "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %   (total)\n" +
-                "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--[Z\n");
+                "              1       16 B           16       16 B              16               1   100.00 %         16 B              16   100.00 %      +--[Z [0 of 0 used (0.00 %)]\n");
     }
 
     @Test

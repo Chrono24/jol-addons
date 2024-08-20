@@ -44,7 +44,7 @@ class PermNode extends BaseNode implements NodeWithChildren<PermNode> {
     }
 
     public String getArrayLabel() {
-        if (hasArrayInfo()) {
+        if ( isArrayInfo()) {
             return String.format(" [%d of %d used (%.2f %%)]", getUsed(), getLength(), getUsePercentage());
         } else {
             return "";
@@ -118,15 +118,4 @@ class PermNode extends BaseNode implements NodeWithChildren<PermNode> {
         _parentClassName = parentClassName;
     }
 
-    static class Ellipsis extends PermNode {
-
-        public Ellipsis(String label) {
-            super(label);
-        }
-
-        @Override
-        public String getArrayLabel() {
-            return " [...] (terminal)";
-        }
-    }
 }

@@ -54,7 +54,8 @@ public class HeapLayout extends HeapStats {
 
     private final String description;
 
-    public HeapLayout(PermNode classHistogramRoot, int classHistogramDepth, String description, int heapTreeDepth, PermNode heapTreeRoot, HeapStats stats) {
+
+    HeapLayout(PermNode classHistogramRoot, int classHistogramDepth, String description, int heapTreeDepth, PermNode heapTreeRoot, HeapStats stats) {
 
         this.classHistogramRoot = classHistogramRoot;
         this.classHistogramDepth = classHistogramDepth;
@@ -136,18 +137,14 @@ public class HeapLayout extends HeapStats {
                                            Object... roots) {
 
         HeapLayout.Builder builder = new HeapWalker() //
-              .withConditionalRecursion(tc::isChildToBeTraversed) //
-              .withIdentitySet(identitySet) //
-              .withObjectSizeCache(objectSizeCache) //
-              .withArraySizeCache(new ArraySizeCache.Precalculated()) //
-              .withStack(stack) //
-              .getTree(HeapLayout.Builder::new, nodeFactory::createFieldNode, nodeFactory::createArrayIndexNode, nodeFactory::recycleNode, roots);
+                .withConditionalRecursion(tc::isChildToBeTraversed) //
+                .withIdentitySet(identitySet) //
+                .withObjectSizeCache(objectSizeCache) //
+                .withArraySizeCache(new ArraySizeCache.Precalculated()) //
+                .withStack(stack) //
+                .getTree(HeapLayout.Builder::new, nodeFactory::createFieldNode, nodeFactory::createArrayIndexNode, nodeFactory::recycleNode, roots);
 
         return builder.build();
-    }
-
-    private static GatheringNode newGatheringNode(ClassPath p) {
-        return new GatheringNode();
     }
 
     public HeapStats toStats() {
@@ -188,9 +185,9 @@ public class HeapLayout extends HeapStats {
 
         private static final int SHORTCUT_INIT_CAP = 1 << 9;  // avoid resizing in most cases; TODO: render configurable
 
-        private String description;
+        private final String description;
 
-        private HeapStats stats = new HeapStats();
+        private final HeapStats stats = new HeapStats();
 
         private final DiyTrie<Object, ClassPath, BaseNode> classHistogramDrillDown = new DiyTrie<>();
         private final DiyTrie<Object, ClassPath, BaseNode> heapTreeDrillDown = new DiyTrie<>();
@@ -218,11 +215,15 @@ public class HeapLayout extends HeapStats {
         @Override
         public void addNode(InitialNode node) {
             classShortcut.computeIfAbsent(node.getPath().getClassBasedOrder(), //
-                    path -> classHistogramDrillDown.computeIfAbsent(path, HeapLayout::newGatheringNode)) //
+                            path -> classHistogramDrillDown.computeIfAbsent(path, p -> newGatheringNode(node))) //
                     .add(node);
             heapShortcut.computeIfAbsent(node.getPath().getTreeBasedOrder(), //
-                    path -> heapTreeDrillDown.computeIfAbsent(path, HeapLayout::newGatheringNode)) //
+                            path -> heapTreeDrillDown.computeIfAbsent(path, p -> newGatheringNode(node))) //
                     .add(node);
+        }
+
+        private BaseNode newGatheringNode(InitialNode initialNode) {
+            return initialNode.isArrayInfo() ? new GatheringNodeForArray() : new GatheringNode();
         }
 
         @Override
@@ -285,9 +286,7 @@ public class HeapLayout extends HeapStats {
                     root.set(permNode); // extract
                 }
 
-            }).forEachRemaining(c -> {
-                maxStackDepth.getAndUpdate(depth -> Math.max(depth, c.getDepth()));
-            });
+            }).forEachRemaining(c -> maxStackDepth.getAndUpdate(depth -> Math.max(depth, c.getDepth())));
 
             return root.get();
         }
@@ -296,7 +295,8 @@ public class HeapLayout extends HeapStats {
         private PermNode createRegularPermNode(DiyTrie.Node<Object, ClassPath, BaseNode> trieNode, BaseNode gatheringNode, String parentClassName, String label,
                                                boolean isRoot, boolean isClass, boolean isTerminalSymbol, boolean isEmptyRow, boolean aggregate) {
 
-            PermNode permNode = isTerminalSymbol ? new PermNode.Ellipsis(label) : new PermNode(label);
+            boolean isArray = gatheringNode != null && gatheringNode.isArrayInfo();
+            PermNode permNode = isTerminalSymbol ? new Ellipsis(label) : isArray ? new PermNodeForArray(label) : new PermNode(label);
 
             if (isEmptyRow) {  // row has no own values, substitute aggregation of children instead
                 trieNode.values().stream().map(DiyTrie.Node::getValue).forEach(permNode::add);
