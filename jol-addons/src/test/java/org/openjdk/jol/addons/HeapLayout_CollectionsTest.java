@@ -380,64 +380,125 @@ public class HeapLayout_CollectionsTest extends BaseHeapLayoutTest {
     void linkedHashMap() {
         givenRoot(new LinkedHashMap<>(_templateMap));
 
-        thenFootprintIs( //
-                  "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
-                + "              27   100.00 %           --      784 B             784   100.00 %   (total)\n"
-                + "              10    37.04 %           24      240 B             240    30.61 %   java.lang.String\n"
-                + "              10    37.04 %           24      240 B             240    30.61 %   [B\n"
-                + "               5    18.52 %           40      200 B             200    25.51 %   java.util.LinkedHashMap$Entry\n"
-                + "               1     3.70 %           56       56 B              56     7.14 %   java.util.LinkedHashMap\n"
-                + "               1     3.70 %           48       48 B              48     6.12 %   [Ljava.util.HashMap$Node;\n");
+        if (Integer.parseInt(System.getProperty("java.vm.specification.version")) < 21) {
+            thenFootprintIs( //
+                    "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n"
+                  + "              27   100.00 %           --      784 B             784   100.00 %   (total)\n"
+                  + "              10    37.04 %           24      240 B             240    30.61 %   java.lang.String\n"
+                  + "              10    37.04 %           24      240 B             240    30.61 %   [B\n"
+                  + "               5    18.52 %           40      200 B             200    25.51 %   java.util.LinkedHashMap$Entry\n"
+                  + "               1     3.70 %           56       56 B              56     7.14 %   java.util.LinkedHashMap\n"
+                  + "               1     3.70 %           48       48 B              48     6.12 %   [Ljava.util.HashMap$Node;\n");
 
-        thenHeapTreeIs( //
-                  "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
-                + "              1       56 B           56       56 B              56              27   100.00 %        784 B             784   100.00 %   (total)\n"
-                + "              1       56 B           56       56 B              56              27   100.00 %        784 B             784   100.00 %      +--java.util.LinkedHashMap\n"
-                + "              1       48 B           48       48 B              48              16    59.26 %        456 B             456    58.16 %      |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table [5 of 8 used (62.50 %)]\n"
-                + "              3       40 B           40      120 B             120              15    93.75 %        408 B             408    89.47 %      |  |  +--java.util.LinkedHashMap$Entry [i]\n"
-                + "              6       24 B           24      144 B             144              12    80.00 %        288 B             288    70.59 %      |  |  |  +--java.lang.String\n"
-                + "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.value\n"
-                + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n"
-                + "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.key\n"
-                + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n"
-                + "              2       40 B           40       80 B              80              10    37.04 %        272 B             272    34.69 %      |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
-                + "              4       24 B           24       96 B              96               8    80.00 %        192 B             192    70.59 %      |  |  +--java.lang.String\n"
-                + "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.value\n"
-                + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n"
-                + "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.key\n"
-                + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n");
+            thenHeapTreeIs( //
+                    "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n"
+                  + "              1       56 B           56       56 B              56              27   100.00 %        784 B             784   100.00 %   (total)\n"
+                  + "              1       56 B           56       56 B              56              27   100.00 %        784 B             784   100.00 %      +--java.util.LinkedHashMap\n"
+                  + "              1       48 B           48       48 B              48              16    59.26 %        456 B             456    58.16 %      |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table [5 of 8 used (62.50 %)]\n"
+                  + "              3       40 B           40      120 B             120              15    93.75 %        408 B             408    89.47 %      |  |  +--java.util.LinkedHashMap$Entry [i]\n"
+                  + "              6       24 B           24      144 B             144              12    80.00 %        288 B             288    70.59 %      |  |  |  +--java.lang.String\n"
+                  + "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.value\n"
+                  + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n"
+                  + "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.key\n"
+                  + "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n"
+                  + "              2       40 B           40       80 B              80              10    37.04 %        272 B             272    34.69 %      |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
+                  + "              4       24 B           24       96 B              96               8    80.00 %        192 B             192    70.59 %      |  |  +--java.lang.String\n"
+                  + "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.value\n"
+                  + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n"
+                  + "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.key\n"
+                  + "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n");
 
-        thenClassHistogramIs( //
-                  "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
-                + "             27   100.00 %       29 B           29      784 B             784   100.00 %   (total)\n"
-                + "             10    37.04 %       24 B           24      240 B             240    30.61 %      +--java.lang.String\n"
-                + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--java.util.LinkedHashMap$Entry\n"
-                + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  +--Entry.value\n"
-                + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
-                + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
-                + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
-                + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  +--Entry.key\n"
-                + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
-                + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
-                + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
-                + "             10    37.04 %       24 B           24      240 B             240    30.61 %      +--[B\n"
-                + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--[B String.value\n"
-                + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  |  +--java.util.LinkedHashMap$Entry\n"
-                + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  |  +--Entry.value\n"
-                + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
-                + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
-                + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
-                + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  |  +--Entry.key\n"
-                + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
-                + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
-                + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
-                + "              5    18.52 %       40 B           40      200 B             200    25.51 %      +--java.util.LinkedHashMap$Entry\n"
-                + "              3    60.00 %       40 B           40      120 B             120    60.00 %      |  +--java.util.LinkedHashMap$Entry [i]\n"
-                + "              3   100.00 %       40 B           40      120 B             120   100.00 %      |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
-                + "              2    40.00 %       40 B           40       80 B              80    40.00 %      |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
-                + "              1     3.70 %       56 B           56       56 B              56     7.14 %      +--java.util.LinkedHashMap\n"
-                + "              1     3.70 %       48 B           48       48 B              48     6.12 %      +--[Ljava.util.HashMap$Node;\n"
-                + "              1   100.00 %       48 B           48       48 B              48   100.00 %      |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n");
+            thenClassHistogramIs( //
+                    "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n"
+                  + "             27   100.00 %       29 B           29      784 B             784   100.00 %   (total)\n"
+                  + "             10    37.04 %       24 B           24      240 B             240    30.61 %      +--java.lang.String\n"
+                  + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--java.util.LinkedHashMap$Entry\n"
+                  + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  +--Entry.value\n"
+                  + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
+                  + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
+                  + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
+                  + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  +--Entry.key\n"
+                  + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
+                  + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
+                  + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
+                  + "             10    37.04 %       24 B           24      240 B             240    30.61 %      +--[B\n"
+                  + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--[B String.value\n"
+                  + "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  |  +--java.util.LinkedHashMap$Entry\n"
+                  + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  |  +--Entry.value\n"
+                  + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
+                  + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
+                  + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
+                  + "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  |  +--Entry.key\n"
+                  + "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry [i]\n"
+                  + "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
+                  + "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
+                  + "              5    18.52 %       40 B           40      200 B             200    25.51 %      +--java.util.LinkedHashMap$Entry\n"
+                  + "              3    60.00 %       40 B           40      120 B             120    60.00 %      |  +--java.util.LinkedHashMap$Entry [i]\n"
+                  + "              3   100.00 %       40 B           40      120 B             120   100.00 %      |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n"
+                  + "              2    40.00 %       40 B           40       80 B              80    40.00 %      |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n"
+                  + "              1     3.70 %       56 B           56       56 B              56     7.14 %      +--java.util.LinkedHashMap\n"
+                  + "              1     3.70 %       48 B           48       48 B              48     6.12 %      +--[Ljava.util.HashMap$Node;\n"
+                  + "              1   100.00 %       48 B           48       48 B              48   100.00 %      |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n");
+        } else {
+            thenFootprintIs( //
+                    "           COUNT    % COUNT       AVG SZ        SUM         RAW SUM      % SUM   DESCRIPTION\n" +
+                    "              27   100.00 %           --      792 B             792   100.00 %   (total)\n" +
+                    "              10    37.04 %           24      240 B             240    30.30 %   java.lang.String\n" +
+                    "              10    37.04 %           24      240 B             240    30.30 %   [B\n" +
+                    "               5    18.52 %           40      200 B             200    25.25 %   java.util.LinkedHashMap$Entry\n" +
+                    "               1     3.70 %           64       64 B              64     8.08 %   java.util.LinkedHashMap\n" +
+                    "               1     3.70 %           48       48 B              48     6.06 %   [Ljava.util.HashMap$Node;\n");
+
+            thenHeapTreeIs( //
+                    "          COUNT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ     RETAINED CT  PAR% R CT  RETAINED SZ        RAW R SZ  PAR% R SZ   DESCRIPTION\n" +
+                    "              1       64 B           64       64 B              64              27   100.00 %        792 B             792   100.00 %   (total)\n" +
+                    "              1       64 B           64       64 B              64              27   100.00 %        792 B             792   100.00 %      +--java.util.LinkedHashMap\n" +
+                    "              1       48 B           48       48 B              48              16    59.26 %        456 B             456    57.58 %      |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table [5 of 8 used (62.50 %)]\n" +
+                    "              3       40 B           40      120 B             120              15    93.75 %        408 B             408    89.47 %      |  |  +--java.util.LinkedHashMap$Entry [i]\n" +
+                    "              6       24 B           24      144 B             144              12    80.00 %        288 B             288    70.59 %      |  |  |  +--java.lang.String\n" +
+                    "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.value\n" +
+                    "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n" +
+                    "              3       24 B           24       72 B              72               6    50.00 %        144 B             144    50.00 %      |  |  |  |  +--Entry.key\n" +
+                    "              3       24 B           24       72 B              72               3    50.00 %         72 B              72    50.00 %      |  |  |  |  |  +--[B String.value [3 of 3 used (100.00 %)]\n" +
+                    "              2       40 B           40       80 B              80              10    37.04 %        272 B             272    34.34 %      |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n" +
+                    "              4       24 B           24       96 B              96               8    80.00 %        192 B             192    70.59 %      |  |  +--java.lang.String\n" +
+                    "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.value\n" +
+                    "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n" +
+                    "              2       24 B           24       48 B              48               4    50.00 %         96 B              96    50.00 %      |  |  |  +--Entry.key\n" +
+                    "              2       24 B           24       48 B              48               2    50.00 %         48 B              48    50.00 %      |  |  |  |  +--[B String.value [2 of 2 used (100.00 %)]\n");
+
+            thenClassHistogramIs( //
+                    "          COUNT    PAR% CT   AVG SIZE   RAW AVG SZ TOTAL SIZE        RAW T SZ  PAR% T SZ   DESCRIPTION\n" +
+                    "             27   100.00 %       29 B           29      792 B             792   100.00 %   (total)\n" +
+                    "             10    37.04 %       24 B           24      240 B             240    30.30 %      +--java.lang.String\n" +
+                    "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--java.util.LinkedHashMap$Entry\n" +
+                    "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  +--Entry.value\n" +
+                    "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  +--java.util.LinkedHashMap$Entry [i]\n" +
+                    "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n" +
+                    "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n" +
+                    "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  +--Entry.key\n" +
+                    "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  +--java.util.LinkedHashMap$Entry [i]\n" +
+                    "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n" +
+                    "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n" +
+                    "             10    37.04 %       24 B           24      240 B             240    30.30 %      +--[B\n" +
+                    "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  +--[B String.value\n" +
+                    "             10   100.00 %       24 B           24      240 B             240   100.00 %      |  |  +--java.util.LinkedHashMap$Entry\n" +
+                    "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  |  +--Entry.value\n" +
+                    "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry [i]\n" +
+                    "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n" +
+                    "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n" +
+                    "              5    50.00 %       24 B           24      120 B             120    50.00 %      |  |  |  +--Entry.key\n" +
+                    "              3    60.00 %       24 B           24       72 B              72    60.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry [i]\n" +
+                    "              3   100.00 %       24 B           24       72 B              72   100.00 %      |  |  |  |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n" +
+                    "              2    40.00 %       24 B           24       48 B              48    40.00 %      |  |  |  |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n" +
+                    "              5    18.52 %       40 B           40      200 B             200    25.25 %      +--java.util.LinkedHashMap$Entry\n" +
+                    "              3    60.00 %       40 B           40      120 B             120    60.00 %      |  +--java.util.LinkedHashMap$Entry [i]\n" +
+                    "              3   100.00 %       40 B           40      120 B             120   100.00 %      |  |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n" +
+                    "              2    40.00 %       40 B           40       80 B              80    40.00 %      |  +--java.util.LinkedHashMap$Entry LinkedHashMap.head/tail\n" +
+                    "              1     3.70 %       64 B           64       64 B              64     8.08 %      +--java.util.LinkedHashMap\n" +
+                    "              1     3.70 %       48 B           48       48 B              48     6.06 %      +--[Ljava.util.HashMap$Node;\n" +
+                    "              1   100.00 %       48 B           48       48 B              48   100.00 %      |  +--[Ljava.util.HashMap$Node; LinkedHashMap.table\n");
+        }
     }
 
     @Test
