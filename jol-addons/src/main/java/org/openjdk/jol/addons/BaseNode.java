@@ -42,8 +42,11 @@ abstract class BaseNode {
     }
 
     public static void checkOverflow( long unsignedInteger ) {
+        if (unsignedInteger < 0) {
+            throw new IllegalArgumentException("unsigned value is negative: " + Long.toHexString(unsignedInteger));
+        }
         if ((unsignedInteger & UINT_MASK) != unsignedInteger) {
-            throw new ArithmeticException("unsigned integer overflow");
+            throw new ArithmeticException("unsigned integer overflow: " + Long.toHexString(unsignedInteger));
         }
     }
 
