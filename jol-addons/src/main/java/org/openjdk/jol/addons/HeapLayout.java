@@ -248,7 +248,7 @@ public class HeapLayout extends HeapStats {
         }
 
         private PermNode convertTrie(DiyTrie<Object, ClassPath, BaseNode> trie, boolean mergeSingleFieldRowIntoClass, boolean aggregate,
-                                     HeapWalker.QuadFunction<DiyTrie.NodeContext<DiyTrie.Node<Object, ClassPath, BaseNode>>, Boolean, Boolean, ClassPath, String> getClassPath,
+                                     ParentClassNameRetrievalFunction getClassPath,
                                      BiFunction<String, String, String> choosePrefix, AtomicInteger maxStackDepth) {
 
             AtomicReference<PermNode> root = new AtomicReference<>();
@@ -382,5 +382,13 @@ public class HeapLayout extends HeapStats {
         private String takeParentClassName(String label, String parentClassName) {
             return parentClassName;
         }
+
+
+        @FunctionalInterface
+        private interface ParentClassNameRetrievalFunction {
+            String apply(DiyTrie.NodeContext<DiyTrie.Node<Object, ClassPath, BaseNode>> nodeContext, boolean isRoot, boolean isClass, ClassPath classPath);
+        }
+
     }
+
 }
