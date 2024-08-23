@@ -197,6 +197,8 @@ public class HeapLayout extends HeapStats {
         private final Map<ClassPath, BaseNode> classShortcut = new HashMap<>(SHORTCUT_INIT_CAP);
         private final Map<ClassPath, BaseNode> heapShortcut = new HashMap<>(SHORTCUT_INIT_CAP);
 
+        private boolean isArrayInfo;
+
         public Builder(Object... roots) {
 
             StringBuilder sb = new StringBuilder();
@@ -214,16 +216,22 @@ public class HeapLayout extends HeapStats {
 
         @Override
         public void addNode(InitialNode node) {
-            classShortcut.computeIfAbsent(node.getPath().getClassBasedOrder(), //
-                            path -> classHistogramDrillDown.computeIfAbsent(path, p -> newGatheringNode(node))) //
-                    .add(node);
-            heapShortcut.computeIfAbsent(node.getPath().getTreeBasedOrder(), //
-                            path -> heapTreeDrillDown.computeIfAbsent(path, p -> newGatheringNode(node))) //
-                    .add(node);
+            isArrayInfo = node.isArrayInfo();
+
+            classShortcut.computeIfAbsent(node.getPath().getClassBasedOrder(), this::addToClassHistogramDrilldown).add(node);
+            heapShortcut.computeIfAbsent(node.getPath().getTreeBasedOrder(), this::addToHeapTreeDrilldown).add(node);
         }
 
-        private BaseNode newGatheringNode(InitialNode initialNode) {
-            return initialNode.isArrayInfo() ? new GatheringNodeForArray() : new GatheringNode();
+        private BaseNode addToClassHistogramDrilldown(ClassPath path) {
+            return classHistogramDrillDown.computeIfAbsent(path, this::newGatheringNode);
+        }
+
+        private BaseNode addToHeapTreeDrilldown(ClassPath path) {
+            return heapTreeDrillDown.computeIfAbsent(path, this::newGatheringNode);
+        }
+
+        private BaseNode newGatheringNode(ClassPath ignored) {
+            return isArrayInfo ? new GatheringNodeForArray() : new GatheringNode();
         }
 
         @Override
