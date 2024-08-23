@@ -114,10 +114,11 @@ public class HeapLayout extends HeapStats {
                                            int objectSizeCacheCapacity, Object... roots) {
 
         ObjectSizeCache objectSizeCache = new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity);
+        ReferenceFieldCache referenceFieldCache = new ReferenceFieldCache.WithObject2LongMap(objectSizeCacheCapacity);
         SimpleStack<Object> stack = new SimpleStack<>(stackCapacity);
         InitialNodeFactory nodeFactory = new InitialNodeFactory(hd, stackCapacity);
 
-        return parseInstance(tc, identitySet, objectSizeCache, stack, nodeFactory, roots);
+        return parseInstance(tc, identitySet, objectSizeCache, referenceFieldCache, stack, nodeFactory, roots);
     }
 
     /**
@@ -131,8 +132,8 @@ public class HeapLayout extends HeapStats {
      * @param roots           root instance(s) to start from
      * @return object graph
      */
-    public static HeapLayout parseInstance(TraversalControl tc,
-                                           VisitedIdentities identitySet, ObjectSizeCache objectSizeCache,
+    public static HeapLayout parseInstance(TraversalControl tc, VisitedIdentities identitySet,
+                                           ObjectSizeCache objectSizeCache, ReferenceFieldCache referenceFieldCache,
                                            SimpleStack<Object> stack, InitialNodeFactory nodeFactory,
                                            Object... roots) {
 
@@ -140,6 +141,7 @@ public class HeapLayout extends HeapStats {
                 .withConditionalRecursion(tc::isChildToBeTraversed) //
                 .withIdentitySet(identitySet) //
                 .withObjectSizeCache(objectSizeCache) //
+                .withReferenceFieldCache(referenceFieldCache) //
                 .withArraySizeCache(new ArraySizeCache.Precalculated()) //
                 .withStack(stack) //
                 .getTree(HeapLayout.Builder::new, nodeFactory::createFieldNode, nodeFactory::createArrayIndexNode, nodeFactory::recycleNode, roots);

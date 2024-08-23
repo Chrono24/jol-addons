@@ -69,12 +69,15 @@ public class HeapStats implements HeapWalker.Stats {
      * @param roots                   root instance(s) to start from
      * @return object stats
      */
-    public static HeapStats parseInstance(TraversalControl tc, VisitedIdentities identitySet, int stackCapacity, int objectSizeCacheCapacity, Object... roots) {
+    public static HeapStats parseInstance(TraversalControl tc, VisitedIdentities identitySet,
+                                          int stackCapacity, int objectSizeCacheCapacity,
+                                          Object... roots) {
 
-        final ObjectSizeCache objectSizeCache = new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity);
-        final SimpleStack<Object> stack = new SimpleStack<>(stackCapacity);
+        ObjectSizeCache objectSizeCache = new ObjectSizeCache.WithObject2LongMap(objectSizeCacheCapacity);
+        ReferenceFieldCache referenceFieldCache = new ReferenceFieldCache.WithObject2LongMap(objectSizeCacheCapacity);
+        SimpleStack<Object> stack = new SimpleStack<>(stackCapacity);
 
-        return parseInstance(tc, identitySet, objectSizeCache, stack, roots);
+        return parseInstance(tc, identitySet, objectSizeCache, referenceFieldCache, stack, roots);
     }
 
 
@@ -88,15 +91,15 @@ public class HeapStats implements HeapWalker.Stats {
      * @param roots           root instance(s) to start from
      * @return object graph
      */
-    public static HeapStats parseInstance(TraversalControl tc,
-          VisitedIdentities identitySet, org.openjdk.jol.info.ObjectSizeCache objectSizeCache,
-          SimpleStack<Object> stack,
-          Object... roots) {
+    public static HeapStats parseInstance(TraversalControl tc, VisitedIdentities identitySet,
+                                          ObjectSizeCache objectSizeCache, ReferenceFieldCache referenceFieldCache,
+                                          SimpleStack<Object> stack, Object... roots) {
 
         return new HeapWalker() //
               .withConditionalRecursion(tc::isChildToBeTraversed) //
               .withIdentitySet(identitySet) //
               .withObjectSizeCache(objectSizeCache) //
+              .withReferenceFieldCache(referenceFieldCache) //
               .withArraySizeCache(new ArraySizeCache.Precalculated()) //
               .withStack(stack) //
               .getStats(HeapStats::new, roots);
