@@ -72,6 +72,12 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
             return this;
         }
 
+        // trivial case: List / Map / whatever nodes pointing to instances of same class within ADT
+        if ( isNestedInstanceMerged(clazz)) {
+            LOG.debug("merging nested instance {} {}", label, clazz);
+            return this;
+        }
+
         if (children == null) {
             children = new HashMap<>();
         }
@@ -81,12 +87,6 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
             boolean terminal = hd.isTerminal(clazz);
             if (terminal) {
                 LOG.debug("terminal symbol {}", clazz);
-            }
-
-            // trivial case: List / Map / whatever nodes pointing to instances of same class within ADT
-            if ( isNestedInstanceMerged(clazz)) {
-                LOG.debug("merging nested instance {}", tail);
-                return this;
             }
 
             ClassPathImpl child = new ClassPathImpl(this.size() + t.size());
