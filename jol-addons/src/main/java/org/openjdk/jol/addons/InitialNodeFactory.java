@@ -27,6 +27,7 @@ package org.openjdk.jol.addons;
 import org.openjdk.jol.util.SimpleStack;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 
 public final class InitialNodeFactory {
@@ -34,11 +35,13 @@ public final class InitialNodeFactory {
     private final HistogramDeduplicator histogramDeduplicator;
     private final SimpleStack<InitialNode> recyclerForObjects;
     private final SimpleStack<InitialNode> recyclerForArrays;
+    private final List<Object> tailCache;
 
     public InitialNodeFactory(HistogramDeduplicator histogramDeduplicator, int expectedStackDepth) {
         this.histogramDeduplicator = histogramDeduplicator;
         recyclerForObjects = new SimpleStack<>(expectedStackDepth);
         recyclerForArrays = new SimpleStack<>(Math.max(1 << 5, expectedStackDepth >>> 4));
+        tailCache = new TwoItemArrayList<>();
     }
 
     InitialNode createArrayIndexNode(InitialNode parent, int idx, int depth, Object o) {
@@ -72,7 +75,9 @@ public final class InitialNodeFactory {
         String mergedLabel = arrayIndexed || parent == null ? label : HistogramDeduplicator.getMergedField(parent.getObjectClass(), label);
 
         if (parent != null) {
-            return parent.getPath().computeIfAbsent(mergedLabel, o.getClass(), histogramDeduplicator, arrayIndexed);
+            tailCache.set(0, mergedLabel);
+            tailCache.set(1, o.getClass());
+            return parent.getPath().computeIfAbsent(mergedLabel, o.getClass(), tailCache, histogramDeduplicator, arrayIndexed);
         } else {
             ClassPathImpl root = new ClassPathImpl(1);
             root.add(o.getClass());
@@ -89,4 +94,5 @@ public final class InitialNodeFactory {
 
         return node;
     }
+
 }

@@ -49,7 +49,12 @@ public interface ObjectSizeCache extends org.openjdk.jol.info.ObjectSizeCache {
 
         @Override
         public long get(Class<?> cl, Object e) {
-            return map.computeIfAbsent(cl, c -> vm.sizeOf(e));
+            long size = map.getLong(cl);
+            if (size == map.defaultReturnValue()) {
+                size = vm.sizeOf(e);
+                map.put(cl, size);
+            }
+            return size;
         }
 
         @Override

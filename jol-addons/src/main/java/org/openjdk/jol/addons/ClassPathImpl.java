@@ -67,7 +67,7 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
     }
 
     @Override
-    public ClassPathImpl computeIfAbsent(String label, Class<?> clazz, HistogramDeduplicator hd, boolean arrayIndexed) {
+    public ClassPathImpl computeIfAbsent(String label, Class<?> clazz, List<Object> tail, HistogramDeduplicator hd, boolean arrayIndexed) {
         if (this.isTerminal()) {
             return this;
         }
@@ -82,43 +82,50 @@ public class ClassPathImpl extends ArrayList<Object> implements ClassPath {
             children = new HashMap<>();
         }
 
-        final List<Object> tail = List.of(label, clazz);
-        return children.computeIfAbsent(tail, t -> {
-            boolean terminal = hd.isTerminal(clazz);
-            if (terminal) {
-                LOG.debug("terminal symbol {}", clazz);
-            }
+        ClassPathImpl child;
+        if ((child = children.get(tail)) == null){
+            ClassPathImpl newChild=createChild(label, clazz, tail, hd, arrayIndexed);
+            children.put(new TwoItemArrayList<>(tail), newChild);
+            return newChild;
+        }
+        return child;
+    }
 
-            ClassPathImpl child = new ClassPathImpl(this.size() + t.size());
-            this.forEach(child::add);
-            t.forEach(child::add);
+    private ClassPathImpl createChild(String label, Class<?> clazz, List<Object> tail, HistogramDeduplicator hd, boolean arrayIndexed) {
+        boolean terminal = hd.isTerminal(clazz);
+        if (terminal) {
+            LOG.debug("terminal symbol {}", clazz);
+        }
 
-            if (!terminal && !arrayIndexed && this.size() > 3) {
-                for (int end = child.size(), testLength = (end - 1) / 4 * 2; testLength > 0; testLength -= 2) {
-                    final int split = end - testLength;
-                    final int start = split - testLength;
-                    if (child.get(split - 2).equals(label) && clazz.equals(child.get(split - 1))) {
-                        List<Object> test1 = child.subList(start, split);
-                        List<Object> test2 = child.subList(split, end);
-                        if (test1.equals(test2)) {
-                            ClassPathImpl parent = this;
-                            do {
-                                if (parent.size() == split) {
-                                    LOG.debug("deduplicating {}", test2);
-                                    return parent;
-                                }
-                                parent = parent.getParent();
+        ClassPathImpl child = new ClassPathImpl(this.size() + tail.size());
+        child.addAll(this);
+        child.addAll(tail);
+
+        if (!terminal && !arrayIndexed && this.size() > 3) {
+            for (int end = child.size(), testLength = (end - 1) / 4 * 2; testLength > 0; testLength -= 2) {
+                final int split = end - testLength;
+                final int start = split - testLength;
+                if (child.get(split - 2).equals(label) && clazz.equals(child.get(split - 1))) {
+                    List<Object> test1 = child.subList(start, split);
+                    List<Object> test2 = child.subList(split, end);
+                    if (test1.equals(test2)) {
+                        ClassPathImpl parent = this;
+                        do {
+                            if (parent.size() == split) {
+                                LOG.debug("deduplicating {}", test2);
+                                return parent;
                             }
-                            while (parent != null);
+                            parent = parent.getParent();
                         }
+                        while (parent != null);
                     }
                 }
             }
+        }
 
-            child.setParent(this);
-            child.setTerminal(terminal);
-            return child;
-        });
+        child.setParent(this);
+        child.setTerminal(terminal);
+        return child;
     }
 
     @Override

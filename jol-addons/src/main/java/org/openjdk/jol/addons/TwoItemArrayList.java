@@ -24,18 +24,42 @@
  */
 package org.openjdk.jol.addons;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+public class TwoItemArrayList<E> extends ArrayList<E> {
 
-public interface ClassPath extends List<Object> {
+    public TwoItemArrayList(List<? extends E> source) {
+        super(source);
+        if (source.size() != 2) {
+            throw new IllegalArgumentException();
+        }
+    }
 
-    ClassPath computeIfAbsent(String label, Class<?> clazz, List<Object> tail, HistogramDeduplicator hd, boolean arrayIndexed);
+    public TwoItemArrayList() {
+        super(2);
+        add(null);
+        add(null);
+    }
 
-    ClassPath getClassBasedOrder();
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof TwoItemArrayList)) {
+            return false;
+        }
 
-    ClassPath getOriginal();
+        //noinspection unchecked
+        TwoItemArrayList<E> other = (TwoItemArrayList<E>) o;
+        if (other.size() != 2) {
+            return false;
+        }
 
-    ClassPath getTreeBasedOrder();
+        return Objects.equals(this.get(0), other.get(0)) && Objects.equals(this.get(1), other.get(1));
+    }
 
-    boolean isTerminal();
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
