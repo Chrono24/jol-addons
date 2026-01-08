@@ -85,7 +85,7 @@ abstract class BaseNode {
     }
 
     public long getSize() {
-        return Integer.toUnsignedLong(_size) << SIZE_SHIFT;
+        return shiftIn(Integer.toUnsignedLong(_size));
     }
 
     public double getUsePercentage() {
@@ -114,7 +114,7 @@ abstract class BaseNode {
     }
 
     public void setSize( long size ) {
-        long shifted = size >>> SIZE_SHIFT;
+        long shifted = shiftOut(size);
         checkOverflow(shifted);
         _size = (int)shifted;
     }
