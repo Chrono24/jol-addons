@@ -40,31 +40,70 @@ public class TraversalControl {
 
     private static final Logger LOG = LoggerFactory.getLogger(TraversalControl.class);
 
-    private static final TraversalControl INSTANCE = builder().withParentBlacklistDirectClasses(Set.of(Class.class, Field.class))
-            .withParentBlacklist(List.of(Thread.class, EnumSet.class, ClassLoader.class))
-            .withAnnotations(List.of(ExcludeFromHeapTraversal.class))
-            .withChildBlacklistDirectClasses(Set.of(FileDescriptor.class))
-            .withChildBlacklist(List.of(FileChannel.class))
+    private static final TraversalControl INSTANCE = builder()
+            .withIncludedAnnotations(List.of(IncludeInHeapTraversal.class))
+
+            .withIncludedChildrenExactClasses(Collections.emptyList())
+            .withIncludedChildrenInstanceOf(Collections.emptySet())
+
+            .withExcludedParentsExactClasses(Set.of(Class.class, Field.class))
+            .withExcludedParentsInstanceOf(List.of(Thread.class, EnumSet.class, ClassLoader.class))
+
+            .withExcludedAnnotations(List.of(ExcludeFromHeapTraversal.class))
+
+            .withExcludedChildrenExactClasses(Set.of(FileDescriptor.class))
+            .withExcludedChildrenInstanceOf(List.of(FileChannel.class))
+
             .build(false);
 
-    private final Set<Class<?>> parentBlacklistDirectClasses;
-    private final List<Class<?>> parentBlacklist;
-    private final List<Class<? extends Annotation>> annotations;
-    private final Set<Class<?>> childBlacklistDirectClasses;
-    private final List<Class<?>> childBlacklist;
+
+    private final List<Class<? extends Annotation>> includedAnnotations;
+
+    private final Set<Class<?>> includedChildrenExactClasses;
+    private final List<Class<?>> includedChildrenInstanceOf;
+
+    private final Set<Class<?>> excludedParentsExactClasses;
+    private final List<Class<?>> excludedParentsInstanceOf;
+
+    private final List<Class<? extends Annotation>> excludedAnnotations;
+
+    private final Set<Class<?>> excludedChildrenExactClasses;
+    private final List<Class<?>> excludedChildrenInstanceOf;
+
     private final Map<String, Set<String>> firstDescents;
 
-    public TraversalControl(Set<Class<?>> parentBlacklistDirectClasses, List<Class<?>> parentBlacklist, List<Class<? extends Annotation>> annotations,
-                            Set<Class<?>> childBlacklistDirectClasses, List<Class<?>> childBlacklist, boolean takeNote) {
 
-        this.parentBlacklistDirectClasses = parentBlacklistDirectClasses;
-        this.parentBlacklist = parentBlacklist;
-        this.annotations = annotations;
-        this.childBlacklistDirectClasses = childBlacklistDirectClasses;
-        this.childBlacklist = childBlacklist;
+    public TraversalControl(Collection<Class<? extends Annotation>> includedAnnotations,
+
+                            Collection<Class<?>> includedChildrenExactClasses,
+                            Collection<Class<?>> includedChildrenInstanceOf,
+
+                            Collection<Class<?>> excludedParentsExactClasses,
+                            Collection<Class<?>> excludedParentsInstanceOf,
+
+                            Collection<Class<? extends Annotation>> excludedAnnotations,
+
+                            Collection<Class<?>> excludedChildrenExactClasses,
+                            Collection<Class<?>> excludedChildrenInstanceOf,
+
+                            boolean takeNote) {
+
+        this.includedAnnotations = List.copyOf(includedAnnotations);
+
+        this.includedChildrenExactClasses = Set.copyOf(includedChildrenExactClasses);
+        this.includedChildrenInstanceOf = List.copyOf(includedChildrenInstanceOf);
+
+        this.excludedParentsExactClasses = Set.copyOf(excludedParentsExactClasses);
+        this.excludedParentsInstanceOf = List.copyOf(excludedParentsInstanceOf);
+
+        this.excludedAnnotations = List.copyOf(excludedAnnotations);
+
+        this.excludedChildrenExactClasses = Set.copyOf(excludedChildrenExactClasses);
+        this.excludedChildrenInstanceOf = List.copyOf(excludedChildrenInstanceOf);
 
         this.firstDescents = takeNote ? new HashMap<>() : null;
     }
+
 
     public static Builder builder() {
         return new Builder();
@@ -77,46 +116,66 @@ public class TraversalControl {
     public boolean isChildToBeTraversed(@Nullable Object parent, @Nullable Field field, Object child) {
         takeNote(parent, child);
 
-        if (parent != null && isParentBlacklisted(parent.getClass())) {
-            return false;
-        }
-        // TODO introduce and handle annotations @ExcludeKeys / @ExcludeValues that allow for ADTs to be counted without contents
-
-        if (isChildBlacklisted(child.getClass())) {
-            return false;
+        if (isFieldIncluded(field)) {
+            return true;
         }
 
-        if (isFieldExcludedByAnnotations(field)) {
+        if (isChildIncluded(child.getClass())) {
+            return true;
+        }
+
+
+        if (parent != null && isParentExcluded(parent.getClass())) {
             return false;
         }
-        // TODO find setters with @Autowired annotation matching fields ;) Perhaps then the child blacklist on DAOs can disappear...
+
+
+        if (isFieldExcluded(field)) {
+            return false;
+        }
+
+        if (isChildExcluded(child.getClass())) {
+            return false;
+        }
 
         return true;
     }
 
-    private boolean isBlacklisted(Class<?> cl, Set<Class<?>> blackset, List<Class<?>> blacklist) {
-        if (blackset.contains(cl)) {
+    private boolean isFieldExcluded(@Nullable Field field) {
+        return isFieldAffectedByAnnotations(field, excludedAnnotations);
+    }
+
+    private boolean isFieldIncluded(@Nullable Field field) {
+        return isFieldAffectedByAnnotations(field, includedAnnotations);
+    }
+
+    private boolean isChildIncluded(Class<?> cl) {
+        return isAffected(cl, includedChildrenExactClasses, includedChildrenInstanceOf);
+    }
+
+    private boolean isChildExcluded(Class<?> cl) {
+        return isAffected(cl, excludedChildrenExactClasses, excludedChildrenInstanceOf);
+    }
+
+    private boolean isAffected(Class<?> cl, Set<Class<?>> affectedExactClasses, List<Class<?>> affectedInstanceOf) {
+        if (affectedExactClasses.contains(cl)) {
             return true;
         }
-        for (int i = 0, n = blacklist.size(); i < n; ++i) {
-            if (blacklist.get(i).isAssignableFrom(cl)) {
+        for (int i = 0, n = affectedInstanceOf.size(); i < n; ++i) {
+            if (affectedInstanceOf.get(i).isAssignableFrom(cl)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isChildBlacklisted(Class<?> cl) {
-        return isBlacklisted(cl, childBlacklistDirectClasses, childBlacklist);
-    }
-
-    private boolean isFieldExcludedByAnnotations(@Nullable Field field) {
+    private boolean isFieldAffectedByAnnotations(@Nullable Field field, List<Class<? extends Annotation>> affectedAnnotations) {
         if (field == null) {
             return false;
         }
 
-        for (int i = 0, n = annotations.size(); i < n; ++i) {
-            if (field.isAnnotationPresent(annotations.get(i))) {
+        for (int i = 0, n = affectedAnnotations.size(); i < n; ++i) {
+            if (field.isAnnotationPresent(affectedAnnotations.get(i))) {
                 return true;
             }
         }
@@ -124,8 +183,8 @@ public class TraversalControl {
         return false;
     }
 
-    private boolean isParentBlacklisted(Class<?> cl) {
-        return isBlacklisted(cl, parentBlacklistDirectClasses, parentBlacklist);
+    private boolean isParentExcluded(Class<?> cl) {
+        return isAffected(cl, excludedParentsExactClasses, excludedParentsInstanceOf);
     }
 
     private void takeNote(Object parent, Object child) {
@@ -140,13 +199,19 @@ public class TraversalControl {
 
     public static class Builder implements Cloneable {
 
-        private Set<Class<?>> parentBlacklistDirectClasses = Collections.emptySet();
-        private List<Class<?>> parentBlacklist = Collections.emptyList();
+        private List<Class<? extends Annotation>> includedAnnotations = Collections.emptyList();
 
-        private List<Class<? extends Annotation>> annotations = Collections.emptyList();
+        private Set<Class<?>> includedChildrenExactClasses = Collections.emptySet();
+        private List<Class<?>> includedChildrenInstanceOf = Collections.emptyList();
 
-        private Set<Class<?>> childBlacklistDirectClasses = Collections.emptySet();
-        private List<Class<?>> childBlacklist = Collections.emptyList();
+        private Set<Class<?>> excludedParentsExactClasses = Collections.emptySet();
+        private List<Class<?>> excludedParentsInstanceOf = Collections.emptyList();
+
+        private List<Class<? extends Annotation>> excludedAnnotations = Collections.emptyList();
+
+        private Set<Class<?>> excludedChildrenExactClasses = Collections.emptySet();
+        private List<Class<?>> excludedChildrenInstanceOf = Collections.emptyList();
+
 
         @Override
         public Object clone() throws CloneNotSupportedException {
@@ -154,31 +219,52 @@ public class TraversalControl {
         }
 
         public TraversalControl build(boolean takeNote) {
-            return new TraversalControl(parentBlacklistDirectClasses, parentBlacklist, annotations, childBlacklistDirectClasses, childBlacklist, takeNote);
+            return new TraversalControl(includedAnnotations,
+                    includedChildrenExactClasses, includedChildrenInstanceOf,
+                    excludedParentsExactClasses, excludedParentsInstanceOf,
+                    excludedAnnotations,
+                    excludedChildrenExactClasses, excludedChildrenInstanceOf,
+                    takeNote);
         }
 
-        public Builder withAnnotations(List<Class<? extends Annotation>> annotations) {
-            this.annotations = annotations;
+        public Builder withIncludedAnnotations(Collection<Class<? extends Annotation>> annotations) {
+            this.includedAnnotations = List.copyOf(annotations);
             return this;
         }
 
-        public Builder withChildBlacklist(List<Class<?>> classes) {
-            childBlacklist = classes;
+        public Builder withIncludedChildrenExactClasses(Collection<Class<?>> classes) {
+            includedChildrenExactClasses = Set.copyOf(classes);
             return this;
         }
 
-        public Builder withChildBlacklistDirectClasses(Set<Class<?>> classes) {
-            childBlacklistDirectClasses = classes;
+        public Builder withIncludedChildrenInstanceOf(Collection<Class<?>> classes) {
+            includedChildrenInstanceOf = List.copyOf(classes);
             return this;
         }
 
-        public Builder withParentBlacklist(List<Class<?>> classes) {
-            parentBlacklist = classes;
+
+        public Builder withExcludedAnnotations(Collection<Class<? extends Annotation>> annotations) {
+            this.excludedAnnotations = List.copyOf(annotations);
             return this;
         }
 
-        public Builder withParentBlacklistDirectClasses(Set<Class<?>> classes) {
-            parentBlacklistDirectClasses = classes;
+        public Builder withExcludedChildrenExactClasses(Collection<Class<?>> classes) {
+            excludedChildrenExactClasses = Set.copyOf(classes);
+            return this;
+        }
+
+        public Builder withExcludedChildrenInstanceOf(Collection<Class<?>> classes) {
+            excludedChildrenInstanceOf = List.copyOf(classes);
+            return this;
+        }
+
+        public Builder withExcludedParentsExactClasses(Collection<Class<?>> classes) {
+            excludedParentsExactClasses = Set.copyOf(classes);
+            return this;
+        }
+
+        public Builder withExcludedParentsInstanceOf(Collection<Class<?>> classes) {
+            excludedParentsInstanceOf = List.copyOf(classes);
             return this;
         }
     }
